@@ -1,0 +1,26 @@
+version: '3'
+services:
+  redis:
+    expose:
+      - 6379
+    ports:
+      - "63791:6379"
+    container_name: storeCache
+    image: "redis:alpine"
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    container_name: storeDB
+      #  nginx:
+#    image: nginx
+#    ports:
+#      - 8000:80
+#    volumes:
+#      - ./html:/usr/share/nginx/html
+      #- ./nginx/nginx.conf:/etc/nginx/nginx.conf
