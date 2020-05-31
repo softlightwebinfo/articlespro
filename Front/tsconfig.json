@@ -10,6 +10,7 @@
     "allowJs": true,
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noUnusedLocals": true,
@@ -19,7 +20,8 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strictNullChecks": false
   },
   "exclude": ["dist", ".next", "out", "next.config.js"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
