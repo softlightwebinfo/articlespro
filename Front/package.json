@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "nodemon",
     "build": "next build && tsc --project tsconfig.server.json",
-    "start": "cross-env NODE_ENV=production node dist/index.js"
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "sass": "node-sass --importer node_modules/node-sass-import -w ./Framework/sass/index.scss -o ./public/static/css"
   },
   "dependencies": {
     "@material-ui/core": "^4.10.0",
@@ -14,8 +15,11 @@
     "express": "latest",
     "next": "latest",
     "next-routes": "^1.4.2",
+    "node-sass": "^4.14.1",
+    "node-sass-import": "^2.0.1",
     "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react-dom": "^16.8.4",
+    "react-image-gallery": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^12.12.42",
@@ -24,5 +28,10 @@
     "nodemon": "^1.19.0",
     "ts-node": "^8.1.0",
     "typescript": "^3.4.5"
+  },
+  "sass": {
+    "includePaths": [
+      "./node_modules"
+    ]
   }
 }
