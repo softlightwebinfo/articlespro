@@ -10,6 +10,7 @@ import {ArticulosContainer} from "../Framework/Containers/ArticulosContainer";
 import {PromocionesContainer} from "../Framework/Containers/PromocionesContainer";
 import {OfertasContainer} from "../Framework/Containers/OfertasContainer";
 import {CategoriasListContainer} from "../Framework/Containers/CategoriasListContainer";
+import {ProjectosListContainer} from "../Framework/Containers/ProjectosListContainer";
 
 export default function Home() {
     return (
@@ -102,6 +103,16 @@ export default function Home() {
             </Container>
             <Container>
                 <CategoriasListContainer/>
+            </Container>
+            <Separator/>
+            <Container>
+                <TitleSubtitle
+                    title={"Projectos"}
+                    description={"Alfombras, ordenadores, monitores, chimeneas, martillos"}
+                />
+            </Container>
+            <Container>
+                <ProjectosListContainer/>
             </Container>
             <Separator/>
             <Container>

@@ -13,9 +13,9 @@ export class ArticulosContainer extends Component {
         return (
             <Grid container spacing={1}>
                 {
-                    [...new Array(16)].map(() => {
+                    [...new Array(16)].map((item, i) => {
                         return (
-                            <Grid item xs={3}>
+                            <Grid key={i} item xs={3}>
                                 <Article
 
                                 />

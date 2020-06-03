@@ -12,9 +12,9 @@ export class CategoriasListContainer extends Component {
         return (
             <Grid container spacing={0}>
                 {
-                    [...new Array(48)].map(() => {
+                    [...new Array(48)].map((item,i) => {
                         return (
-                            <Grid item xs={2}>
+                            <Grid key={i} item xs={2}>
                                 <CategoryItem
 
                                 />

@@ -28,7 +28,7 @@ export class MyGallery extends React.Component {
             showPlayButton={false}
             showBullets={true}
             showIndex={false}
-            autoPlay={false}
+            autoPlay={true}
             renderItem={(data) => {
                 return (
                     <div className={"MyGallery__item"}>
