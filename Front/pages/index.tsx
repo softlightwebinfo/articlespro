@@ -11,8 +11,21 @@ import {PromocionesContainer} from "../Framework/Containers/PromocionesContainer
 import {OfertasContainer} from "../Framework/Containers/OfertasContainer";
 import {CategoriasListContainer} from "../Framework/Containers/CategoriasListContainer";
 import {ProjectosListContainer} from "../Framework/Containers/ProjectosListContainer";
+import {wrapper} from "../Framework/store/store";
+import {loadData, startClock, tickClock} from "../Framework/store/example/actions";
+import {useEffect} from "react";
+import {useDispatch, useSelector} from 'react-redux'
+import {END} from 'redux-saga'
 
-export default function Home() {
+function Home() {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(startClock())
+    }, [dispatch])
+
+    const error = useSelector((state) => state.error);
+    const light = useSelector((state) => state.light);
     return (
         <Wrapper>
             <MyGallery/>
@@ -124,3 +137,14 @@ export default function Home() {
         </Wrapper>
     )
 }
+
+export const getStaticProps = wrapper.getStaticProps(async ({store}) => {
+    store.dispatch(tickClock(false))
+
+    if (!store.getState().placeholderData) {
+        store.dispatch(loadData());
+        store.dispatch(END)
+    }
+    await store.sagaTask.toPromise()
+});
+export default Home;

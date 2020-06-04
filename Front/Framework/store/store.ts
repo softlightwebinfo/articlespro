@@ -1,20 +1,32 @@
-import {rootReducer} from "./reducers";
-import {applyMiddleware, createStore} from "redux";
-import {composeWithDevTools} from "redux-devtools-extension";
-import thunk from "redux-thunk";
-import logger from 'redux-logger';
-import {MakeStore, createWrapper, Context, HYDRATE} from 'next-redux-wrapper';
+import {applyMiddleware, createStore} from 'redux'
+import createSagaMiddleware from 'redux-saga'
+import {createWrapper} from 'next-redux-wrapper'
 
-export interface State {
-    tick: string;
-}
+import rootReducer from './reducers'
+import rootSaga from './saga'
 
-export const initStore = (initialState = {}) => {
-    return createStore(
+const bindMiddleware = (middleware) => {
+    if (process.env.NODE_ENV !== 'production') {
+        const {composeWithDevTools} = require('redux-devtools-extension')
+        return composeWithDevTools(applyMiddleware(...middleware))
+    }
+    return applyMiddleware(...middleware)
+};
+
+
+export const makeStore = (context, initialState = {}) => {
+    const sagaMiddleware = createSagaMiddleware();
+
+    const store = createStore(
         rootReducer,
         initialState,
-        composeWithDevTools(applyMiddleware(thunk, logger))
-    )
+        bindMiddleware([sagaMiddleware])
+    );
+
+    store.sagaTask = sagaMiddleware.run(rootSaga)
+
+    return store
 };
-const makeStore: MakeStore<State> = (context: Context) => initStore();
-export const wrapper = createWrapper<State>(makeStore, {debug: true});
+
+
+export const wrapper = createWrapper(makeStore, {debug: true});
