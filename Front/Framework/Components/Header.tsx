@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {fade, makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,13 +15,17 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import {ScrollTop} from "./ScrollTop";
-import {Fab} from "@material-ui/core";
+import {Button, Fab} from "@material-ui/core";
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import {DrawerMenu} from "./DrawerMenu";
-import {Wrapper} from "./Wrapper";
+import {useSelector} from 'react-redux'
+import Look from '@material-ui/icons/Lock';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        button: {
+            margin: theme.spacing(1),
+        },
         grow: {
             flexGrow: 1,
         },
@@ -87,6 +91,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const Header = (props) => {
+    const {isLogin} = useSelector((state) => state.user);
+
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -204,28 +210,42 @@ export const Header = (props) => {
                         />
                     </div>
                     <div className={classes.grow}/>
-                    <div className={classes.sectionDesktop}>
-                        <IconButton aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <MailIcon/>
-                            </Badge>
-                        </IconButton>
-                        <IconButton aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="secondary">
-                                <NotificationsIcon/>
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle/>
-                        </IconButton>
-                    </div>
+                    {isLogin && (
+                        <div className={classes.sectionDesktop}>
+                            <IconButton aria-label="show 4 new mails" color="inherit">
+                                <Badge badgeContent={4} color="secondary">
+                                    <MailIcon/>
+                                </Badge>
+                            </IconButton>
+                            <IconButton aria-label="show 17 new notifications" color="inherit">
+                                <Badge badgeContent={17} color="secondary">
+                                    <NotificationsIcon/>
+                                </Badge>
+                            </IconButton>
+                            <IconButton
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                            >
+                                <AccountCircle/>
+                            </IconButton>
+                        </div>
+                    )}
+                    {!isLogin && (
+                        <div className={classes.sectionDesktop}>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                className={classes.button}
+                                startIcon={<Look/>}
+                            >
+                                Crear cuenta
+                            </Button>
+                        </div>
+                    )}
                     <div className={classes.sectionMobile}>
                         <IconButton
                             aria-label="show more"

@@ -24,8 +24,8 @@ function Home() {
         dispatch(startClock())
     }, [dispatch])
 
-    const error = useSelector((state) => state.error);
-    const light = useSelector((state) => state.light);
+    //const error = useSelector((state) => state.error);
+    //const light = useSelector((state) => state.light);
     return (
         <Wrapper>
             <MyGallery/>

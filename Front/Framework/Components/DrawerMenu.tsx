@@ -7,11 +7,11 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import Look from '@material-ui/icons/Lock';
 import {settingsMenu} from "../../settings";
 // @ts-ignore
 import {Link} from '../../server/routes';
+import {useSelector} from 'react-redux';
 
 const useStyles = makeStyles({
     list: {
@@ -25,6 +25,7 @@ const useStyles = makeStyles({
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export const DrawerMenu: ({trigger, anchor}: { trigger: any; anchor: Anchor }) => any = ({trigger, anchor}) => {
+    const {isLogin} = useSelector((state) => state.user);
     const classes = useStyles();
     const [state, setState] = React.useState({
         top: false,
@@ -72,12 +73,24 @@ export const DrawerMenu: ({trigger, anchor}: { trigger: any; anchor: Anchor }) =
             </List>
             <Divider/>
             <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
-                        <ListItemText primary={text}/>
+                {!isLogin && (
+                    <>
+                        <ListItem button>
+                            <ListItemIcon><Look/></ListItemIcon>
+                            <ListItemText primary={"Iniciar sesión"}/>
+                        </ListItem>
+                        <ListItem button>
+                            <ListItemIcon><Look/></ListItemIcon>
+                            <ListItemText primary={"Crear cuenta"}/>
+                        </ListItem>
+                    </>
+                )}
+                {isLogin && (
+                    <ListItem button>
+                        <ListItemIcon><Look/></ListItemIcon>
+                        <ListItemText primary={"Cerrar sesión"}/>
                     </ListItem>
-                ))}
+                )}
             </List>
         </div>
     );
