@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"article/libraries"
+	"article/modelDB"
 	"article/models"
 	"article/proto"
 	"article/settings"
@@ -178,25 +179,34 @@ func (u UserController) Delete(c context.Context, rq *proto.UserServiceDeleteRq)
 }
 
 func (u UserController) Create(c context.Context, r *proto.UserServiceCreateRq) (*proto.UserServiceBool, error) {
-	orm := new(libraries.ORMInsert)
-	orm.From("users")
-	orm.Add("email", r.GetEmail())
-	orm.Add("password", r.GetPassword())
-	orm.Add("created_at", time.Now())
-	orm.Add("updated_at", time.Now())
-	orm.Add("active", true)
-	orm.Add("name", r.GetName())
-	build := orm.Build()
-	_, a, err := build.Save(settings.Db)
-	if err != nil {
-		log.Print(err.Error())
-		return nil, err
+	userModel := modelDB.UserModel{}
+	existUser := userModel.ExistUser(settings.Db, r.GetEmail())
+
+	if !existUser {
+		return &proto.UserServiceBool{
+			Success: false,
+		}, nil
 	}
-	if a == 1 {
+	id, errorCreateUser := userModel.CreateUser(settings.Db, r)
+	if errorCreateUser != nil {
+		log.Print(errorCreateUser.Error())
+		return nil, errorCreateUser
+	}
+
+	for _, phone := range r.GetPhone() {
+		errPhone := userModel.AddPhone(phone, id)
+		if errPhone != nil {
+			log.Print(errPhone.Error())
+			return nil, errPhone
+		}
+	}
+
+	if id > 0 {
 		redisDel := models.RedisUser{}
 		redisDel.DeleteCache(settings.Redis)
 	}
+
 	return &proto.UserServiceBool{
-		Success: a == 1,
+		Success: id > 0,
 	}, nil
 }

@@ -12,6 +12,7 @@ message UserServiceCreateRq {
     string password = 2;
     bool active = 3;
     string name = 4;
+    repeated string phone = 5;
 }
 message UserServiceModel {
     int64 id = 1;

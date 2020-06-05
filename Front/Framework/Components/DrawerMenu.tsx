@@ -75,14 +75,22 @@ export const DrawerMenu: ({trigger, anchor}: { trigger: any; anchor: Anchor }) =
             <List>
                 {!isLogin && (
                     <>
-                        <ListItem button>
-                            <ListItemIcon><Look/></ListItemIcon>
-                            <ListItemText primary={"Iniciar sesión"}/>
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon><Look/></ListItemIcon>
-                            <ListItemText primary={"Crear cuenta"}/>
-                        </ListItem>
+                        <Link route={"login"}>
+                            <a>
+                                <ListItem button>
+                                    <ListItemIcon><Look/></ListItemIcon>
+                                    <ListItemText primary={"Iniciar sesión"}/>
+                                </ListItem>
+                            </a>
+                        </Link>
+                        <Link route={"register"}>
+                            <a>
+                                <ListItem button>
+                                    <ListItemIcon><Look/></ListItemIcon>
+                                    <ListItemText primary={"Crear cuenta"}/>
+                                </ListItem>
+                            </a>
+                        </Link>
                     </>
                 )}
                 {isLogin && (

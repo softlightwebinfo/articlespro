@@ -273,7 +273,7 @@ type ORMAction struct {
 }
 
 func (then *ORMAction) Save(db *sql.DB) (id int64, affected int64, error error) {
-	println(then.dataBuilder)
+//	println(then.dataBuilder)
 	res, e := db.Exec(then.dataBuilder, then.dataValues...)
 	if e != nil {
 		error = e

@@ -3,5 +3,5 @@
   "dbport": "5433",
   "dbuser": "postgres",
   "dbpassword": "mypassword",
-  "dbname": "postgres"
+  "dbname": "Store"
 }

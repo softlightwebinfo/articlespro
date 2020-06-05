@@ -20,6 +20,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import {DrawerMenu} from "./DrawerMenu";
 import {useSelector} from 'react-redux'
 import Look from '@material-ui/icons/Lock';
+import {Link} from '../../server/routes';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -236,14 +237,18 @@ export const Header = (props) => {
                     )}
                     {!isLogin && (
                         <div className={classes.sectionDesktop}>
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                className={classes.button}
-                                startIcon={<Look/>}
-                            >
-                                Crear cuenta
-                            </Button>
+                            <Link route={"register"}>
+                                <a>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        className={classes.button}
+                                        startIcon={<Look/>}
+                                    >
+                                        Crear cuenta
+                                    </Button>
+                                </a>
+                            </Link>
                         </div>
                     )}
                     <div className={classes.sectionMobile}>
