@@ -8,6 +8,7 @@ import (
 	"article/settings"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -72,29 +73,8 @@ func (u UserController) Get(c context.Context, rq *proto.UserServiceGetRq) (*pro
 	return &model, nil
 }
 func (u UserController) Login(c context.Context, rq *proto.UserServiceLoginRq) (*proto.UserServiceLoginRs, error) {
-	orm := new(libraries.ORM)
-	model := proto.UserServiceLoginRs{}
-	data, args := orm.Select("id, email, updated_at, name").
-		From("users").
-		WhereAnd("active", "=", true).
-		WhereAnd("email", "=", rq.GetEmail()).
-		Where("password", "=", rq.GetPassword()).
-		Build().ToSql()
-	tim := time.Time{}
-	model.User = &proto.UserServiceModel{}
-	err := settings.Db.QueryRow(data, args...).Scan(
-		&model.User.Id,
-		&model.User.Email,
-		&tim,
-		&model.User.Name,
-	)
-	model.User.UpdatedAt = tim.Format("2006-01-02 15:04:05")
-	if err != nil {
-		println("Error: ", err.Error())
-		return nil, err
-	}
-	model.Token = "token-jwt-" + string(model.User.Id)
-	return &model, nil
+	userModel := modelDB.UserModel{}
+	return userModel.Login(rq.GetEmail(), rq.GetPassword())
 }
 
 func (u UserController) GetAll(c context.Context, rq *proto.UserServiceGetAllRq) (*proto.UserServiceGetAllRs, error) {
@@ -178,14 +158,12 @@ func (u UserController) Delete(c context.Context, rq *proto.UserServiceDeleteRq)
 	}, nil
 }
 
-func (u UserController) Create(c context.Context, r *proto.UserServiceCreateRq) (*proto.UserServiceBool, error) {
+func (u UserController) Create(c context.Context, r *proto.UserServiceCreateRq) (*proto.UserServiceLoginRs, error) {
 	userModel := modelDB.UserModel{}
 	existUser := userModel.ExistUser(settings.Db, r.GetEmail())
 
 	if !existUser {
-		return &proto.UserServiceBool{
-			Success: false,
-		}, nil
+		return nil, errors.New("Ya existe el usuario en nuestro sistema")
 	}
 	id, errorCreateUser := userModel.CreateUser(settings.Db, r)
 	if errorCreateUser != nil {
@@ -206,7 +184,5 @@ func (u UserController) Create(c context.Context, r *proto.UserServiceCreateRq) 
 		redisDel.DeleteCache(settings.Redis)
 	}
 
-	return &proto.UserServiceBool{
-		Success: id > 0,
-	}, nil
+	return userModel.Login(r.GetEmail(), r.GetPassword())
 }

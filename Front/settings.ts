@@ -24,3 +24,7 @@ export const settingsMenu = [
     new MenuModel("Ofertas", Offer, "listOffers"),
     new MenuModel("Profesionales", Directory, "directory"),
 ];
+
+export const API = "/api";
+
+export const getApi = (url: string) => `${API}/${url}/`;

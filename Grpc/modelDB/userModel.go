@@ -60,3 +60,29 @@ func (then *UserModel) ExistUser(db *sql.DB, email string) (existUser bool) {
 	}
 	return false
 }
+
+func (then *UserModel) Login(email, password string) (user *proto.UserServiceLoginRs, error error) {
+	orm := new(libraries.ORM)
+	model := proto.UserServiceLoginRs{}
+	data, args := orm.Select("id, email, updated_at, name").
+		From("users").
+		WhereAnd("active", "=", true).
+		WhereAnd("email", "=", email).
+		Where("password", "=", password).
+		Build().ToSql()
+	tim := time.Time{}
+	model.User = &proto.UserServiceModel{}
+	err := settings.Db.QueryRow(data, args...).Scan(
+		&model.User.Id,
+		&model.User.Email,
+		&tim,
+		&model.User.Name,
+	)
+	model.User.UpdatedAt = tim.Format("2006-01-02 15:04:05")
+	if err != nil {
+		println("Error: ", err.Error())
+		return nil, err
+	}
+	model.Token = "token-jwt-" + string(model.User.Id)
+	return &model, nil
+}
