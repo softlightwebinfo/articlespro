@@ -1,6 +1,39 @@
+export class FormError {
+    public type: string;
+    public name: string;
+    public value: string;
+
+    constructor(type: string, name: string, value: string) {
+        this.type = type;
+        this.name = name;
+        this.value = value;
+    }
+}
+
+export interface IFormErrorsMessagesInitial {
+    [p: string]: string;
+}
+
+export interface IFormErrorsMessages extends IFormErrorsMessagesInitial {
+    common: string;
+}
+
 export class Form {
     private _fields = {};
     private _fieldsErrors = {};
+    private _errorsMessages: IFormErrorsMessages = {
+        common: "Error"
+    };
+
+    constructor(errors: IFormErrorsMessages, initial: IFormErrorsMessagesInitial) {
+        this._errorsMessages = errors;
+        this._fields = {
+            ...initial
+        };
+        this._fieldsErrors = {
+            ...initial
+        };
+    }
 
     public add(name: string, value: string, type: string) {
         if (!this._isErrorValidate(value, type)) {
@@ -9,14 +42,7 @@ export class Form {
                 delete this._fieldsErrors[name];
             }
         } else {
-            if (name in this._fields) {
-                delete this._fields[name];
-            }
-            this._fieldsErrors[name] = {
-                type,
-                name,
-                value,
-            };
+            this._fieldsErrors[name] = new FormError(type, name, value);
         }
     }
 
@@ -30,7 +56,7 @@ export class Form {
                 return !Form.ValidateEmail(value);
             }
         }
-        return false;
+        return !value.length;
     }
 
     public static ValidatePhone(phone: string): boolean {
@@ -44,11 +70,15 @@ export class Form {
     }
 
     validate(): boolean {
-        return Object.keys(this._fields).length && !Object.keys(this._fieldsErrors).length;
+        return !Object.keys(this._fieldsErrors).length;
     }
 
     getFields() {
         return this._fields;
+    }
+
+    getErrors() {
+        return Object.keys(this._fieldsErrors).map((k) => this._errorsMessages[k]);
     }
 
     validatePasswords() {

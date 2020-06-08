@@ -139,6 +139,7 @@ function Home() {
 }
 
 export const getStaticProps = wrapper.getStaticProps(async ({store}) => {
+    return;
     store.dispatch(tickClock(false))
 
     if (!store.getState().placeholderData) {

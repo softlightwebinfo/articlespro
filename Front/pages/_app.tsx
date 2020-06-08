@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../Framework/Components/Theme';
 import {wrapper} from "../Framework/store/store";
 import {END} from 'redux-saga'
+import {ActionInitialLogin} from "../Framework/store/user";
 
 class MyApp extends App {
     static async getInitialProps({Component, ctx}) {
@@ -14,6 +15,11 @@ class MyApp extends App {
         };
 
         if (ctx.req) {
+            ctx.store.dispatch(ActionInitialLogin(ctx));
+            ctx.store.dispatch(END);
+            await ctx.store.sagaTask.toPromise()
+        } else {
+            ctx.store.dispatch(ActionInitialLogin(ctx));
             ctx.store.dispatch(END);
             await ctx.store.sagaTask.toPromise()
         }

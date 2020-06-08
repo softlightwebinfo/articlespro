@@ -67,4 +67,5 @@ service UserService {
     rpc Login (UserServiceLoginRq) returns (UserServiceLoginRs);
     rpc GetAll (UserServiceGetAllRq) returns (UserServiceGetAllRs);
     rpc Delete (UserServiceDeleteRq) returns (UserServiceBool);
+    rpc Start (UserServiceGetRq) returns (UserServiceLoginRs);
 }

@@ -186,3 +186,30 @@ func (u UserController) Create(c context.Context, r *proto.UserServiceCreateRq) 
 
 	return userModel.Login(r.GetEmail(), r.GetPassword())
 }
+
+func (u UserController) Start(c context.Context, rq *proto.UserServiceGetRq) (*proto.UserServiceLoginRs, error) {
+	userModel := modelDB.UserModel{}
+	orm := new(libraries.ORM)
+
+	data, args := orm.Select("id, email, password").
+		From("users").
+		WhereAnd("active", "=", true).
+		Where("id", "=", rq.GetId()).
+		Build().ToSql()
+
+	var id int64
+	var email, password string
+
+	err := settings.Db.QueryRow(data, args...).Scan(
+		&id,
+		&email,
+		&password,
+	)
+
+	if err != nil {
+		log.Print("No se ha encontrado el usuario")
+		return nil, err
+	}
+
+	return userModel.Login(email, password)
+}

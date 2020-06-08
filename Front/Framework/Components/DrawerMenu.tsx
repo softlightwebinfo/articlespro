@@ -11,7 +11,8 @@ import Look from '@material-ui/icons/Lock';
 import {settingsMenu} from "../../settings";
 // @ts-ignore
 import {Link} from '../../server/routes';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {Logout} from "../store/user";
 
 const useStyles = makeStyles({
     list: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles({
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export const DrawerMenu: ({trigger, anchor}: { trigger: any; anchor: Anchor }) => any = ({trigger, anchor}) => {
+    const dispatch = useDispatch();
     const {isLogin} = useSelector((state) => state.user);
     const classes = useStyles();
     const [state, setState] = React.useState({
@@ -47,6 +49,11 @@ export const DrawerMenu: ({trigger, anchor}: { trigger: any; anchor: Anchor }) =
 
         setState({...state, [anchor]: open});
     };
+
+    const cerrarSession = () => {
+        dispatch(Logout());
+    };
+
     const list = (anchor: Anchor) => (
         <div
             className={clsx(classes.list, {
@@ -94,7 +101,7 @@ export const DrawerMenu: ({trigger, anchor}: { trigger: any; anchor: Anchor }) =
                     </>
                 )}
                 {isLogin && (
-                    <ListItem button>
+                    <ListItem button onClick={cerrarSession}>
                         <ListItemIcon><Look/></ListItemIcon>
                         <ListItemText primary={"Cerrar sesión"}/>
                     </ListItem>

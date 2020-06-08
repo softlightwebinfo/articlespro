@@ -7,3 +7,7 @@ export interface IAuthRegister extends IAuth {
     phone: string;
     name: string;
 }
+
+export interface IAuthLogin extends IAuth {
+
+}

@@ -43,7 +43,6 @@ export class RegisterContainer extends Component<IPRegisterContainer, ISRegister
     };
 
     render() {
-        console.log(this);
         return (
             <Register
                 onSubmit={this.onSubmit}

@@ -2,8 +2,8 @@ import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import {Login} from "../Framework/Components/Login";
 import {makeStyles} from "@material-ui/core/styles";
+import {LoginContainer} from "../Framework/Containers/LoginContainer";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ export default function SignInSide() {
             <CssBaseline />
             <Grid item xs={false} sm={4} md={9} className={classes.image} />
             <Grid item xs={12} sm={8} md={3} component={Paper} elevation={6} square>
-                <Login/>
+                <LoginContainer/>
             </Grid>
         </Grid>
     );

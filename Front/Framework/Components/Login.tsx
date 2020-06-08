@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import Avatar from '@material-ui/core/Avatar';
+import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -10,6 +11,8 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from "@material-ui/core/styles";
+import {IPLogin} from "../Props/IPLogin";
+import {Link as Href} from '../../server/routes';
 
 function Copyright() {
     return (
@@ -55,43 +58,54 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function Login() {
+export function Login({onChange, onSubmit, errors = []}: IPLogin) {
     const classes = useStyles();
 
     return (
         <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-                <LockOutlinedIcon/>
-            </Avatar>
+            <Href route={"index"}>
+                <a>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon/>
+                    </Avatar>
+                </a>
+            </Href>
             <Typography component="h1" variant="h5">
-                Sign in
+                Entrar en tu cuenta
             </Typography>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} noValidate onSubmit={onSubmit}>
+                {errors.map((item, index) => (
+                    <Fragment key={index}>
+                        <Alert severity="error">{item}</Alert>
+                        <div style={{marginBottom: 5}}/>
+                    </Fragment>
+                ))}
                 <TextField
+                    onChange={onChange}
                     variant="outlined"
                     margin="normal"
                     required
                     fullWidth
-                    id="email"
-                    label="Email Address"
+                    type={"email"}
+                    label="Correo electronico"
                     name="email"
                     autoComplete="email"
                     autoFocus
                 />
                 <TextField
+                    onChange={onChange}
                     variant="outlined"
                     margin="normal"
                     required
                     fullWidth
                     name="password"
-                    label="Password"
+                    label="Contraseña"
                     type="password"
-                    id="password"
                     autoComplete="current-password"
                 />
                 <FormControlLabel
                     control={<Checkbox value="remember" color="primary"/>}
-                    label="Remember me"
+                    label="Recordar cuenta"
                 />
                 <Button
                     type="submit"
@@ -100,17 +114,17 @@ export function Login() {
                     color="primary"
                     className={classes.submit}
                 >
-                    Sign In
+                    Iniciar sesión
                 </Button>
                 <Grid container>
                     <Grid item xs>
                         <Link href="#" variant="body2">
-                            Forgot password?
+                            ¿Olvidé la contraseña?
                         </Link>
                     </Grid>
                     <Grid item>
                         <Link href="#" variant="body2">
-                            {"Don't have an account? Sign Up"}
+                            {"¿No tengo una cuenta? Crear cuenta"}
                         </Link>
                     </Grid>
                 </Grid>

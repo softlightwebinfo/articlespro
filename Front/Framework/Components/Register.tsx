@@ -163,7 +163,7 @@ export default function Register({onChange, onSubmit}: IPRegister) {
                         <Grid item>
                             <Href route={"login"}>
                                 <Link href="#" variant="body2">
-                                    ¿Ya tienes una cuenta? Registrarse
+                                    ¿Ya tienes una cuenta? Inicia sesión
                                 </Link>
                             </Href>
                         </Grid>

@@ -25,6 +25,6 @@ export const settingsMenu = [
     new MenuModel("Profesionales", Directory, "directory"),
 ];
 
-export const API = "/api";
+export const API = "http://localhost:3000/api";
 
 export const getApi = (url: string) => `${API}/${url}/`;
