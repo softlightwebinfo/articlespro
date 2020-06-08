@@ -22,7 +22,7 @@ function reducers(state = exampleInitialState, action) {
         case actionTypes.AUTH_USER: {
             return {
                 ...state,
-                isLogin: (action.data.token && action.data.user),
+                isLogin: !!(action.data.token.length && Object.keys(action.data.user).length),
                 token: action.data.token,
                 user: action.data.user,
             }
@@ -35,6 +35,7 @@ function reducers(state = exampleInitialState, action) {
                 user: null,
             }
         }
+        case actionTypes.AUTH_REGISTER_FAILURE:
         case actionTypes.AUTH_LOGIN_FAILURE: {
             return {
                 ...state,

@@ -84,4 +84,8 @@ export class Form {
     validatePasswords() {
         return ("password" in this._fields && "rpassword" in this._fields) && (this._fields["password"] === this._fields['rpassword']);
     }
+
+    getErrorText(text: string) {
+        return this._errorsMessages[text]
+    }
 }

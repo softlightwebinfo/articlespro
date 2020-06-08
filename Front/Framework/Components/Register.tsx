@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import {makeStyles} from "@material-ui/core/styles";
 import {Link as Href} from '../../server/routes';
 import {IPRegister} from "../Props/IPRegister";
+import Alert from '@material-ui/lab/Alert';
 
 function Copyright() {
     return (
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function Register({onChange, onSubmit}: IPRegister) {
+export default function Register({onChange, onSubmit, errors = []}: IPRegister) {
     const classes = useStyles();
     return (
         <>
@@ -71,6 +72,12 @@ export default function Register({onChange, onSubmit}: IPRegister) {
                     Crea tu nueva cuenta
                 </Typography>
                 <form onSubmit={onSubmit} className={classes.form} noValidate>
+                    {errors.map((item, index) => (
+                        <Fragment key={index}>
+                            <Alert severity="error">{item}</Alert>
+                            <div style={{marginBottom: 5}}/>
+                        </Fragment>
+                    ))}
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField

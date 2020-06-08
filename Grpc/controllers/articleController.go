@@ -455,6 +455,8 @@ func (s *ArticleController) Create(_ context.Context, request *proto.ArticleServ
 	orm.Add("description", request.GetDescription())
 	orm.Add("fk_user_id", request.GetFkUserId())
 	orm.Add("fk_category", request.GetFkCategoryId())
+	orm.Add("price", request.GetPrice())
+	orm.Add("offer", request.GetOffer())
 	orm.Add("created_at", libraries.GetTimeNow())
 	orm.Add("updated_at", libraries.GetTimeNow())
 	b := orm.Build()

@@ -7,6 +7,7 @@ import {IPLoginContainer} from "../Props/IPLoginContainer";
 import {ActionUserLogin} from "../store/user";
 import {IAuthLogin} from "../Interfaces/IAuth";
 import {Login} from "../Components/Login";
+import {Router} from "../../server/routes";
 
 @connect(state => ({isLogin: state.user.isLogin, error: state.user.error}))
 export class LoginContainer extends Component<IPLoginContainer, ISLoginContainer> {
@@ -50,6 +51,12 @@ export class LoginContainer extends Component<IPLoginContainer, ISLoginContainer
         return {};
     }
 
+    componentDidUpdate(nextProps) {
+        if (this.props.isLogin && !nextProps.isLogin) {
+            Router.pushRoute("dashboard");
+        }
+    }
+
     onSubmit = (e) => {
         e.preventDefault();
         this.setState({isSend: false, error: [], lastError: ""});
@@ -61,7 +68,6 @@ export class LoginContainer extends Component<IPLoginContainer, ISLoginContainer
         }
         this.setState({isSend: true});
         let result = this.state.form.getFields();
-        console.log(result);
         let user: IAuthLogin = result as IAuthLogin;
         this.props.dispatch(ActionUserLogin(user));
     };
@@ -69,7 +75,7 @@ export class LoginContainer extends Component<IPLoginContainer, ISLoginContainer
     render() {
         return (
             <Login
-                errors={this.state.error}
+                //errors={this.state.error}
                 onSubmit={this.onSubmit}
                 onChange={this.onChange}
             />

@@ -9,10 +9,12 @@ const handler = routes.getRequestHandler(app);
 const cookieParser = require('cookie-parser');
 
 const PROTO_PATH = __dirname + '/proto/userService.proto';
+const PROTO_ARTICLES_PATH = __dirname + '/proto/articleService.proto';
 
 // With express
 app.prepare().then(() => {
     const myClient = new GRPCClient(PROTO_PATH, 'proto', 'UserService', 'localhost:4040');
+    const myClientArticles = new GRPCClient(PROTO_ARTICLES_PATH, 'proto', 'ArticleService', 'localhost:4040');
 
     let server = express();
     server.use(express.json());
@@ -71,6 +73,25 @@ app.prepare().then(() => {
             return res.json(resp);
         });
     });
+
+    server.post('/api/articles/create', (req, res) => {
+        let body = req.body.data;
+        myClientArticles.runService('Create', {
+            title: body.title,
+            description: body.description,
+            fkUserId: req.cookies.user,
+            fkCategoryId: body.fkCategoryId,
+            price: body.price,
+            offer: body.offer,
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+
     server.use(handler).listen(3000)
 });
 
