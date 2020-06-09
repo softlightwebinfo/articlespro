@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"article/libraries"
+	"article/modelDB"
 	"article/models"
 	"article/proto"
 	"article/settings"
@@ -449,28 +450,32 @@ func (s *ArticleController) Get(_ context.Context, request *proto.ArticleService
 Crea el nuevo articulo
 */
 func (s *ArticleController) Create(_ context.Context, request *proto.ArticleServiceCreateRq) (*proto.ArticleServiceRsBool, error) {
-	orm := new(libraries.ORMInsert)
-	orm.From("articles")
-	orm.Add("title", request.GetTitle())
-	orm.Add("description", request.GetDescription())
-	orm.Add("fk_user_id", request.GetFkUserId())
-	orm.Add("fk_category", request.GetFkCategoryId())
-	orm.Add("price", request.GetPrice())
-	orm.Add("offer", request.GetOffer())
-	orm.Add("created_at", libraries.GetTimeNow())
-	orm.Add("updated_at", libraries.GetTimeNow())
-	b := orm.Build()
-	_, a, e := b.Save(settings.Db)
+	model := modelDB.ArticleModel{}
+	id, e := model.CreateArticle(settings.Db, request)
 	if e != nil {
-		println("Error", e.Error())
+		println("Error: ", e.Error())
 		return nil, e
 	}
-	if a == 1 {
+	if len(request.GetFileNames()) > 0 {
+		for _, file := range request.GetFileNames() {
+			orm := new(libraries.ORMInsert)
+			orm.From("articles_images")
+			orm.Add("fk_id_article", id)
+			orm.Add("image", file)
+			_, _, e := orm.Build().Save(settings.Db)
+			if e != nil {
+				println("Error", e.Error())
+				return nil, e
+			}
+		}
+	}
+
+	if id > 0 {
 		art := models.RedisArticle{}
 		art.DeleteCache(settings.Redis)
 	}
 	return &proto.ArticleServiceRsBool{
-		Success: a == 1,
+		Success: id > 0,
 	}, nil
 }
 

@@ -5,8 +5,6 @@ export class FormInput extends FormComponent {
     private readonly _name: string;
     private readonly _title: string;
     private readonly _type: TFormInputType;
-    private _required: boolean = true;
-    private _autoFocus: boolean = false;
     private _onChange: (e: any, component: this) => void;
 
     constructor(name: string, title: string, type: TFormInputType = "text") {
@@ -29,14 +27,6 @@ export class FormInput extends FormComponent {
         return this._type;
     }
 
-    get required(): boolean {
-        return this._required;
-    }
-
-    get autoFocus(): any {
-        return this._autoFocus;
-    }
-
     get onChange(): (e: any, component: this) => void {
         return this._onChange;
     }
@@ -45,13 +35,5 @@ export class FormInput extends FormComponent {
         this._onChange = value;
     }
 
-    SetAutoFocus(autoFocus: boolean): this {
-        this._autoFocus = autoFocus;
-        return this;
-    }
 
-    setRequired(required: boolean) {
-        this._required = required;
-        return this;
-    }
 }

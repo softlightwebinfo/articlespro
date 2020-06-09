@@ -29,6 +29,7 @@ export class Form extends Component<IForm> {
 
     componentDidMount(): void {
         this.props.form.GetComponents().forEach((component, index) => {
+            if (component.constructor.name == FormButton.name) return;
             let obj = new FormChange(component.name, "", "");
             this.props.form.attr.onChange(obj, component);
             // @ts-ignore

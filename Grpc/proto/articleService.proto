@@ -121,6 +121,7 @@ message ArticleServiceCreateRq {
     int64 fkCategoryId = 4;
     float price = 5;
     float offer = 6;
+    repeated string fileNames = 7;
 }
 // Update article single
 message ArticleServiceUpdateRq {
