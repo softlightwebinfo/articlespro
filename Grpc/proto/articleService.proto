@@ -50,6 +50,15 @@ message ArticleServiceModel {
     ArticleUserModel user = 7;
     ArticleCategoryModel category = 8;
 }
+message ArticleUserServiceModel {
+    int64 id = 1;
+    string title = 2;
+    string description = 3;
+    string updatedAt = 4;
+    string price = 5;
+    string offer = 6;
+    string image = 7;
+}
 message ArticleServicePopularModel {
     int64 id = 1;
     string title = 2;
@@ -62,12 +71,22 @@ message ArticleServiceGetAllRq {
     int64 category = 3;
     bool OrderLast = 4;
 } // Get all articles
+// Get all articles
+message ArticleServiceGetAllUsersRq {
+    string offset = 1;
+    string limit = 2;
+    int64 user = 3;
+} // Get all articles
 message ArticleServiceGetPopularRq {
     string offset = 1;
     string limit = 2;
 }
 message ArticleServiceGetAllRs {
     repeated ArticleServiceModel result = 1;
+    int64 count = 2;
+}
+message ArticleServiceGetAllUserRs {
+    repeated ArticleUserServiceModel result = 1;
     int64 count = 2;
 }
 
@@ -149,6 +168,7 @@ message ArticleServiceViewRq {
 }
 
 service ArticleService {
+    rpc GetAllUsers (ArticleServiceGetAllUsersRq) returns (ArticleServiceGetAllUserRs);
     rpc GetAll (ArticleServiceGetAllRq) returns (ArticleServiceGetAllRs);
     rpc GetPopular (ArticleServiceGetPopularRq) returns (ArticleServiceGetPopularRs);
     rpc Get (ArticleServiceGetRq) returns (ArticleServiceGetRs);

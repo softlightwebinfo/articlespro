@@ -9,62 +9,100 @@ import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import PublishIcon from '@material-ui/icons/Publish';
+// @ts-ignore
+import {Link} from '../../server/routes';
 
 export const mainListItems = (
     <div>
-        <ListItem button>
+        <Link route={"dashboard"}>
+            <a>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DashboardIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="Dashboard"/>
+                </ListItem>
+            </a>
+        </Link>
+        <Link route={"dashboardPublish"}>
+            <a>
+                <ListItem button>
+                    <ListItemIcon>
+                        <PublishIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="Publicar articulo"/>
+                </ListItem>
+            </a>
+        </Link>
+        <ListItem button disabled>
             <ListItemIcon>
-                <DashboardIcon />
+                <ShoppingCartIcon/>
             </ListItemIcon>
-            <ListItemText primary="Dashboard" />
+            <ListItemText primary="Pedidos"/>
         </ListItem>
         <ListItem button>
             <ListItemIcon>
-                <ShoppingCartIcon />
+                <PeopleIcon/>
             </ListItemIcon>
-            <ListItemText primary="Orders" />
+            <ListItemText primary="Clientes"/>
         </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Customers" />
-        </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <BarChartIcon />
-            </ListItemIcon>
-            <ListItemText primary="Reports" />
-        </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <LayersIcon />
-            </ListItemIcon>
-            <ListItemText primary="Integrations" />
-        </ListItem>
+        <Link route={"dashboardArticles"}>
+            <a>
+                <ListItem button>
+                    <ListItemIcon>
+                        <BarChartIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="Productos"/>
+                </ListItem>
+            </a>
+        </Link>
     </div>
 );
 
 export const secondaryListItems = (
     <div>
-        <ListSubheader inset>Saved reports</ListSubheader>
+        <ListSubheader inset>Reportes Guardados</ListSubheader>
         <ListItem button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon/>
             </ListItemIcon>
-            <ListItemText primary="Current month" />
+            <ListItemText primary="Current month"/>
         </ListItem>
         <ListItem button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon/>
             </ListItemIcon>
-            <ListItemText primary="Last quarter" />
+            <ListItemText primary="Last quarter"/>
         </ListItem>
         <ListItem button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon/>
             </ListItemIcon>
-            <ListItemText primary="Year-end sale" />
+            <ListItemText primary="Year-end sale"/>
+        </ListItem>
+    </div>
+);
+export const settingsListItems = (
+    <div>
+        <ListSubheader inset>Opciones</ListSubheader>
+        <ListItem button>
+            <ListItemIcon>
+                <AssignmentIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Configuración"/>
+        </ListItem>
+        <ListItem button>
+            <ListItemIcon>
+                <AssignmentIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Escaparate"/>
+        </ListItem>
+        <ListItem button>
+            <ListItemIcon>
+                <AssignmentIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Cerrar sesión"/>
         </ListItem>
     </div>
 );

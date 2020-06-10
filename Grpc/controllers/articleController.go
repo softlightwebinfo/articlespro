@@ -7,6 +7,7 @@ import (
 	"article/proto"
 	"article/settings"
 	"context"
+	sql2 "database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/lib/pq"
@@ -104,6 +105,85 @@ func (s *ArticleController) GetAll(_ context.Context, request *proto.ArticleServ
 		return nil, e
 	}
 	res := &proto.ArticleServiceGetAllRs{
+		Result: result,
+		Count:  totalCount,
+	}
+	p, _ := json.Marshal(res)
+	errSet := settings.Redis.Set(redisKey, p, settings.MinuteSaveRedis).Err()
+	if errSet != nil {
+		return nil, errSet
+	}
+	return res, nil
+}
+func (s *ArticleController) GetAllUsers(_ context.Context, request *proto.ArticleServiceGetAllUsersRq) (*proto.ArticleServiceGetAllUserRs, error) {
+	limit := "0"
+	offset := "0"
+	orm := new(libraries.ORM)
+
+	orm.
+		Select("a.id, a.title, a.description, a.updated_at, a.price, a.offer, (select c.image from articles_images c WHERE a.id=c.fk_id_article ORDER BY random() LIMIT 1) as image").
+		From("articles a").Where("fk_user_id", "=", request.GetUser())
+	orm.Order("a.updated_at", "desc")
+
+	if request.GetLimit() != "" {
+		orm.Limit(request.GetLimit())
+		limit = request.GetLimit()
+	} else {
+		orm.Limit(string(settings.Limit))
+		limit = string(settings.Limit)
+	}
+	if request.GetOffset() != "" {
+		orm.Offset(request.GetOffset())
+		offset = request.GetOffset()
+	}
+	redisKey := fmt.Sprintf("articles:all:users:%s:%s:%d", offset, limit, request.GetUser())
+	get := settings.Redis.Get(redisKey)
+	valRedis, errRedis := get.Result()
+	if errRedis == nil {
+		var r = &proto.ArticleServiceGetAllUserRs{}
+		_ = json.Unmarshal([]byte(valRedis), r)
+		return r, nil
+	}
+	data, args := orm.Build().ToSql()
+	rows, err := settings.Db.Query(data, args...)
+	if err != nil {
+		println("Error: ", err.Error())
+		return nil, err
+	}
+	var image sql2.NullString
+	var result []*proto.ArticleUserServiceModel
+	for rows.Next() {
+		model := proto.ArticleUserServiceModel{}
+		tim := time.Time{}
+		e := rows.Scan(
+			&model.Id,
+			&model.Title,
+			&model.Description,
+			&tim,
+			&model.Price,
+			&model.Offer,
+			&image,
+		)
+		model.Image = image.String
+		model.UpdatedAt = tim.Format("2006-01-02 15:04:05")
+		if e != nil {
+			println("Error 2", e.Error())
+			return nil, e
+		}
+		result = append(result, &model)
+	}
+	orm.ClearSelect()
+	orm.Select("count(a.id) as total")
+	orm.ClearLimit()
+	orm.ClearOffset()
+	orm.ClearOrderBy()
+	sql, args2 := orm.Build().ToSql()
+	var totalCount int64 = 0
+	e := settings.Db.QueryRow(sql, args2...).Scan(&totalCount)
+	if e != nil {
+		return nil, e
+	}
+	res := &proto.ArticleServiceGetAllUserRs{
 		Result: result,
 		Count:  totalCount,
 	}

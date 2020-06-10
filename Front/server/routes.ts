@@ -14,4 +14,6 @@ module.exports = route
     .add({name: 'listPlusArticles', pattern: '/plus-articles', page: 'listPlusArticles'})
     .add({name: 'blog', pattern: '/blog', page: 'blog'})
     .add({name: 'dashboard', pattern: '/dashboard', page: 'dashboard/index'})
+    .add({name: 'dashboardPublish', pattern: '/dashboard/publish', page: 'dashboard/publish'})
+    .add({name: 'dashboardArticles', pattern: '/dashboard/articles', page: 'dashboard/articles'})
     .add({name: 'directory', pattern: '/directory', page: 'directory'});

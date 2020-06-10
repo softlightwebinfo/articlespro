@@ -95,6 +95,25 @@ app.prepare().then(() => {
         });
     });
 
+    server.get('/api/articles/all', (req, res) => {
+        // @ts-ignore
+        if (!req.cookies.user) {
+            return res.status(500).json({error: "El usuario no esta logeado"})
+        }
+        myClientArticles.runService('GetAllUsers', {
+            // @ts-ignore
+            user: req.cookies.user,
+            offset: "0",
+            limit: "100",
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+
     server.post('/api/articles/create', upload, async (req, res) => {
         // @ts-ignore
         const imageName = req.filename;

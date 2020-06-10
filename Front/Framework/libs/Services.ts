@@ -15,11 +15,23 @@ export class Services {
         return await fetch(getApi("articles/create"), {
             body: formData,
             method: "POST",
-            headers:{
+            headers: {
                 //'Accept': 'application/json',
                 //'Content-Type': 'multipart/form-data',
                 //'Authorization': accessToken,
             }
         });
     }
+
+    static async GetAllArticles(data) {
+        return await fetch(getApi("articles/all"), {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'cookie': data.req.headers.cookie,
+            }
+        });
+    }
+
 }
