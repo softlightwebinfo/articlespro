@@ -2,5 +2,7 @@ import {IPListArticlesAdminResult} from "./IPListArticlesAdmin";
 
 export interface IPArticleContainer {
     article: IPListArticlesAdminResult;
-    index: number,
+    index: number;
+
+    onDelete?: () => void;
 }

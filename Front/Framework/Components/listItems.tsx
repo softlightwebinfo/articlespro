@@ -9,6 +9,8 @@ import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import ViewListProducts from '@material-ui/icons/ViewList';
+import LocalOffer from '@material-ui/icons/LocalOffer';
 import PublishIcon from '@material-ui/icons/Publish';
 // @ts-ignore
 import {Link} from '../../server/routes';
@@ -35,28 +37,54 @@ export const mainListItems = (
                 </ListItem>
             </a>
         </Link>
+        <Link route={"dashboardArticles"}>
+            <a>
+                <ListItem button>
+                    <ListItemIcon>
+                        <ViewListProducts/>
+                    </ListItemIcon>
+                    <ListItemText primary="Productos"/>
+                </ListItem>
+            </a>
+        </Link>
+        <Link route={"dashboardPromotions"}>
+            <a>
+                <ListItem button>
+                    <ListItemIcon>
+                        <BarChartIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="Promociones"/>
+                </ListItem>
+            </a>
+        </Link>
+        <Link route={"dashboardOffers"}>
+            <a>
+                <ListItem button>
+                    <ListItemIcon>
+                        <LocalOffer/>
+                    </ListItemIcon>
+                    <ListItemText primary="Ofertas"/>
+                </ListItem>
+            </a>
+        </Link>
+        <ListItem button disabled>
+            <ListItemIcon>
+                <BarChartIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Presupuestos"/>
+        </ListItem>
         <ListItem button disabled>
             <ListItemIcon>
                 <ShoppingCartIcon/>
             </ListItemIcon>
             <ListItemText primary="Pedidos"/>
         </ListItem>
-        <ListItem button>
+        <ListItem button disabled>
             <ListItemIcon>
                 <PeopleIcon/>
             </ListItemIcon>
             <ListItemText primary="Clientes"/>
         </ListItem>
-        <Link route={"dashboardArticles"}>
-            <a>
-                <ListItem button>
-                    <ListItemIcon>
-                        <BarChartIcon/>
-                    </ListItemIcon>
-                    <ListItemText primary="Productos"/>
-                </ListItem>
-            </a>
-        </Link>
     </div>
 );
 

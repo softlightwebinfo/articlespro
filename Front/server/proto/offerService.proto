@@ -1,0 +1,39 @@
+syntax = "proto3";
+package proto;
+
+message OfferServiceGetAllUsersRQ {
+    string offset = 1;
+    string limit = 2;
+    int64 user = 3;
+}
+
+message OfferServiceGetAllUsersRS {
+    repeated OfferUserServiceModel result = 1;
+    int64 count = 2;
+}
+
+message OfferUserServiceModel {
+    int64 id = 1;
+    string title = 2;
+    string description = 3;
+    string updatedAt = 4;
+    string startAt = 5;
+    string endAt = 6;
+    string offer = 7;
+}
+
+message OfferServiceCreateRQ {
+    string title = 1;
+    string description = 2;
+    int64 user = 3;
+    repeated string fileNames = 4;
+}
+
+message OfferServiceRS {
+    bool success = 1;
+}
+
+service OfferService {
+    rpc GetAllUsers (OfferServiceGetAllUsersRQ) returns (OfferServiceGetAllUsersRS);
+    rpc Create (OfferServiceCreateRQ) returns (OfferServiceRS);
+}

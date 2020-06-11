@@ -1,9 +1,9 @@
 import {Grid} from "@material-ui/core";
 import * as React from "react";
-import {IPListArticlesAdmin} from "../Props/IPListArticlesAdmin";
+import {IPListArticlesAdmin, IPListArticlesAdminResult} from "../Props/IPListArticlesAdmin";
 import {ArticleContainer} from "./ArticleContainer";
 
-export const ListArticlesAdmin = ({articles}: { articles: IPListArticlesAdmin }) => {
+export const ListArticlesAdmin = ({articles, onDelete}: { articles: IPListArticlesAdmin, onDelete: (art: IPListArticlesAdminResult) => void }) => {
     return (
         <Grid container spacing={3}>
             {articles.result.map((item, index) => (
@@ -13,6 +13,7 @@ export const ListArticlesAdmin = ({articles}: { articles: IPListArticlesAdmin })
                     key={item.id}
                 >
                     <ArticleContainer
+                        onDelete={e => onDelete(item)}
                         article={item}
                         index={index}
                     />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -7,43 +7,53 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import {IPPromotion} from "../Props/IPPromotion";
 
 const useStyles = makeStyles({
     root: {
         maxWidth: 345,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
     },
     media: {
         height: 140,
     },
+    content: {
+        flex: 1,
+    }
 });
 
-export const Promocion = () => {
+export const Promocion = ({promotion}: IPPromotion) => {
     const classes = useStyles();
+    const [open, setOpen] = useState(false);
+    const onclick = () => {
+        setOpen(!open);
+    };
 
     return (
         <Card className={classes.root}>
-            <CardActionArea>
+            <CardActionArea  className={classes.content}>
                 <CardMedia
                     className={classes.media}
-                    image="https://media.informabtl.com/wp-content/uploads/2018/05/promociones-retail-e1525819399293.jpg"
-                    title="Contemplative Reptile"
+                    image={promotion.image ? `/images/promotions/${promotion.image}` : `/static/images/badImage.png`}
+                    title={promotion.title}
                 />
                 <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        Lizard
+                    <Typography title={promotion.title} gutterBottom variant="h5" component="h2">
+                        {promotion.title.substr(0, 20) + '...'}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                        across all continents except Antarctica
+                        {open ? promotion.description : promotion.description.substr(0, 100) + '...'}
                     </Typography>
                 </CardContent>
             </CardActionArea>
             <CardActions>
                 <Button size="small" color="primary">
-                    Share
+                    Compartir
                 </Button>
-                <Button size="small" color="primary">
-                    Learn More
+                <Button onClick={onclick} size="small" color="primary">
+                    Leer Más
                 </Button>
             </CardActions>
         </Card>

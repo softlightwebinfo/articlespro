@@ -20,7 +20,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import {DrawerMenu} from "./DrawerMenu";
 import {useSelector} from 'react-redux'
 import Look from '@material-ui/icons/Lock';
-import {Link} from '../../server/routes';
+import {Link, Router} from '../../server/routes';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -117,7 +117,7 @@ export const Header = (props) => {
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
-
+    const handleMenuUrl = (route: string) => Router.pushRoute(route);
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -129,8 +129,10 @@ export const Header = (props) => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={() => handleMenuUrl("dashboard")}>Panel de control</MenuItem>
+            <MenuItem onClick={() => handleMenuUrl("index")}>Ir a WEB</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Configuración</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Cerrar sesión</MenuItem>
         </Menu>
     );
 

@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const Article = ({article, isAdmin}: IPArticle) => {
+export const Article = ({article, isAdmin, admin}: IPArticle) => {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
 
@@ -70,13 +70,13 @@ export const Article = ({article, isAdmin}: IPArticle) => {
     );
     const getActionsAdmin = () => (
         <>
-            <IconButton aria-label="Eliminar" title={"ELiminar"}>
+            <IconButton onClick={admin.onDelete} aria-label="Eliminar" title={"ELiminar"}>
                 <DeleteIcon/>
             </IconButton>
-            <IconButton aria-label="Editar" title={"Editar"}>
+            <IconButton onClick={admin.onEdit} aria-label="Editar" title={"Editar"}>
                 <EditIcon/>
             </IconButton>
-            <IconButton aria-label="Visualizar Detalle" title={"Visualizar Detalle"}>
+            <IconButton onClick={admin.onVisualize} aria-label="Visualizar Detalle" title={"Visualizar Detalle"}>
                 <ViewDetailIcon/>
             </IconButton>
         </>

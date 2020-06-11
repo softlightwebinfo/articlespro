@@ -17,7 +17,15 @@ export class ArticulosContainer extends Component {
                         return (
                             <Grid key={i} item xs={3}>
                                 <Article
-
+                                    article={{
+                                        id: "",
+                                        title: "",
+                                        description: "",
+                                        image: "",
+                                        offer: "",
+                                        price: "",
+                                        updatedAt: "",
+                                    }}
                                 />
                             </Grid>
                         );

@@ -15,6 +15,8 @@ const cookieParser = require('cookie-parser');
 
 const PROTO_PATH = __dirname + '/proto/userService.proto';
 const PROTO_ARTICLES_PATH = __dirname + '/proto/articleService.proto';
+const PROTO_PROMOTIONS_PATH = __dirname + '/proto/promotionService.proto';
+const PROTO_OFFERS_PATH = __dirname + '/proto/offerService.proto';
 
 
 let storage = multer.diskStorage({
@@ -30,11 +32,12 @@ let storage = multer.diskStorage({
 });
 let upload = multer({storage: storage}).single('file');
 
-
 // With express
 app.prepare().then(() => {
     const myClient = new GRPCClient(PROTO_PATH, 'proto', 'UserService', 'localhost:4040');
     const myClientArticles = new GRPCClient(PROTO_ARTICLES_PATH, 'proto', 'ArticleService', 'localhost:4040');
+    const myClientPromotions = new GRPCClient(PROTO_PROMOTIONS_PATH, 'proto', 'PromotionService', 'localhost:4040');
+    const myClientOffers = new GRPCClient(PROTO_OFFERS_PATH, 'proto', 'OfferService', 'localhost:4040');
 
     let server = express();
     server.use(express.json());
@@ -95,12 +98,67 @@ app.prepare().then(() => {
         });
     });
 
+    server.delete('/api/articles/delete', (req, res) => {
+        // @ts-ignore
+        if (!req.cookies.user) {
+            return res.status(500).json({error: "El usuario no esta logeado"})
+        }
+        myClientArticles.runService('DeleteHide', {
+            // @ts-ignore
+            id: req.body.id,
+            user: req.cookies.user,
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+
     server.get('/api/articles/all', (req, res) => {
         // @ts-ignore
         if (!req.cookies.user) {
             return res.status(500).json({error: "El usuario no esta logeado"})
         }
         myClientArticles.runService('GetAllUsers', {
+            // @ts-ignore
+            user: req.cookies.user,
+            offset: "0",
+            limit: "100",
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+
+    server.get('/api/promotions/all', (req, res) => {
+        // @ts-ignore
+        if (!req.cookies.user) {
+            return res.status(500).json({error: "El usuario no esta logeado"})
+        }
+        myClientPromotions.runService('GetAllUsers', {
+            // @ts-ignore
+            user: req.cookies.user,
+            offset: "0",
+            limit: "100",
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+    server.get('/api/offers/all', (req, res) => {
+        // @ts-ignore
+        if (!req.cookies.user) {
+            return res.status(500).json({error: "El usuario no esta logeado"})
+        }
+        myClientOffers.runService('GetAllUsers', {
             // @ts-ignore
             user: req.cookies.user,
             offset: "0",
@@ -137,6 +195,37 @@ app.prepare().then(() => {
             fkCategoryId: Number(body.category),
             price: Number(body.price),
             offer: Number(body.offer),
+            // @ts-ignore
+            fileNames: [imageName]
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+
+    server.post('/api/promotions/create', upload, async (req, res) => {
+        // @ts-ignore
+        const imageName = req.filename;
+        let body = req.body;
+        // @ts-ignore
+        const {filename: image} = req.file;
+        // @ts-ignore
+        await sharp(req.file.path)
+            .resize(500)
+            .png({quality: 50})
+            .toFile(
+                // @ts-ignore
+                path.resolve(req.file.destination, 'promotions', image)
+            );
+        // @ts-ignore
+        fs.unlinkSync(req.file.path);
+        myClientPromotions.runService('Create', {
+            title: body.title,
+            description: body.description,
+            user: Number(req.cookies.user),
             // @ts-ignore
             fileNames: [imageName]
         }, (e, resp) => {

@@ -7,6 +7,7 @@ import {TextField, Button, Grid, Select, MenuItem} from "@material-ui/core";
 import {FormTextarea} from "../libs/Form/Components/FormTextarea";
 import {FormSelect} from "../libs/Form/Components/FormSelect";
 import {FormChange} from "../libs/Form/libs/FormChange";
+import {FormDatePicker} from "../libs/Form/Components/FormDatePicker";
 
 export class Form extends Component<IForm> {
     constructor(props) {
@@ -102,6 +103,29 @@ export class Form extends Component<IForm> {
                                     <MenuItem key={item.value} value={item.value}>{item.title}</MenuItem>
                                 ))}
                             </Select>
+                        </Grid>
+                    )
+                }
+                case FormDatePicker.name: {
+                    const field: FormDatePicker = component as FormDatePicker;
+
+                    return (
+                        <Grid item xs={field.col_xs} key={index}>
+                            <TextField
+                                id="datetime-local"
+                                label={field.title}
+                                name={field.name}
+                                type={field.type}
+                                variant="outlined"
+                                fullWidth
+                                autoFocus={field.autoFocus}
+                                required={field.required}
+                                defaultValue={field.defaultValue}
+                                onChange={e => this.onChange(e, component)}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
                         </Grid>
                     )
                 }
