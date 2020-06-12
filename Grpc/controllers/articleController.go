@@ -122,9 +122,9 @@ func (s *ArticleController) GetAllUsers(_ context.Context, request *proto.Articl
 
 	orm.
 		Select("a.id, a.title, a.description, a.updated_at, a.price, a.offer, (select c.image from articles_images c WHERE a.id=c.fk_id_article ORDER BY random() LIMIT 1) as image").
-		From("articles a").Where("fk_user_id", "=", request.GetUser())
+		From("articles a").WhereAnd("fk_user_id", "=", request.GetUser()).
+		Where("a.deleted_at", "nil", "is null")
 	orm.Order("a.updated_at", "desc")
-
 	if request.GetLimit() != "" {
 		orm.Limit(request.GetLimit())
 		limit = request.GetLimit()
@@ -652,6 +652,28 @@ func (s *ArticleController) Delete(_ context.Context, request *proto.ArticleServ
 	orm := new(libraries.ORMDelete)
 	orm.From("articles")
 	orm.Where("id", "=", request.GetId())
+	b := orm.Build()
+	_, a, e := b.Save(settings.Db)
+	if e != nil {
+		println("Error", e.Error())
+		return nil, e
+	}
+	if a == 1 {
+		art := models.RedisArticle{}
+		art.DeleteCache(settings.Redis)
+	}
+	return &proto.ArticleServiceRsBool{
+		Success: a == 1,
+	}, nil
+}
+func (s *ArticleController) DeleteHide(_ context.Context, request *proto.ArticleServiceDeleteHideRq) (*proto.ArticleServiceRsBool, error) {
+	now := time.Now()
+	fmt.Print(now)
+	orm := new(libraries.ORMUpdate)
+	orm.From("articles")
+	orm.Add("deleted_at", now)
+	orm.WhereAnd("id", "=", request.GetId())
+	orm.Where("fk_user_id", "=", request.GetUser())
 	b := orm.Build()
 	_, a, e := b.Save(settings.Db)
 	if e != nil {

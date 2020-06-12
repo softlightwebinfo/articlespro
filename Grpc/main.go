@@ -26,6 +26,8 @@ func main() {
 	proto.RegisterUserServiceServer(srv, &controllers.UserController{})
 	proto.RegisterCategoryServiceServer(srv, &controllers.CategoryController{})
 	proto.RegisterContactServiceServer(srv, &controllers.ContactController{})
+	proto.RegisterPromotionServiceServer(srv, &controllers.PromotionController{})
+	proto.RegisterOfferServiceServer(srv, &controllers.OfferController{})
 
 	reflection.Register(srv)
 	println("Start server http://localhost:4040")

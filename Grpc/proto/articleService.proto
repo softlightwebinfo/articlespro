@@ -152,6 +152,10 @@ message ArticleServiceUpdateRq {
 // Delete article single
 message ArticleServiceDeleteRq {
     int64 id = 1;
+} // Delete article single
+message ArticleServiceDeleteHideRq {
+    int64 id = 1;
+    int64 user = 2;
 }
 // Active Article single
 message ArticleServiceActiveRq {
@@ -177,6 +181,7 @@ service ArticleService {
     rpc GetBook (ArticleServiceGetBookRq) returns (ArticleServiceGetBookRs);
     rpc Update (ArticleServiceUpdateRq) returns (ArticleServiceRsBool);
     rpc Delete (ArticleServiceDeleteRq) returns (ArticleServiceRsBool);
+    rpc DeleteHide (ArticleServiceDeleteHideRq) returns (ArticleServiceRsBool);
     rpc Active (ArticleServiceActiveRq) returns (ArticleServiceRsBool);
     rpc AddView (ArticleServiceViewRq) returns (ArticleServiceRsBool);
     rpc TogglePublic (ArticleServicePublicRq) returns (ArticleServiceRsBool);

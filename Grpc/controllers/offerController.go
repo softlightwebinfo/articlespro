@@ -7,23 +7,24 @@ import (
 	"article/proto"
 	"article/settings"
 	"context"
+	sql2 "database/sql"
 	"encoding/json"
 	"fmt"
-	sql2 "database/sql"
+	"github.com/lib/pq"
 	"time"
 )
 
-type PromotionController struct {
+type OfferController struct {
 }
 
-func (u PromotionController) GetAllUsers(c context.Context, request *proto.PromotionServiceGetAllUsersRQ) (*proto.PromotionServiceGetAllUsersRS, error) {
+func (u *OfferController) GetAllUsers(c context.Context, request *proto.OfferServiceGetAllUsersRQ) (*proto.OfferServiceGetAllUsersRS, error) {
 	limit := "0"
 	offset := "0"
 	orm := new(libraries.ORM)
 
 	orm.
-		Select("a.id, a.title, a.description, a.updated_at,  (select c.image from promotions_images c WHERE a.id=c.fk_promotion_id ORDER BY random() LIMIT 1) as image").
-		From("promotions a").WhereAnd("fk_user_id", "=", request.GetUser()).
+		Select("a.id, a.title, a.description, a.updated_at, start_at, end_at, offer, (select c.image from offers_images c WHERE a.id=c.fk_offer_id ORDER BY random() LIMIT 1) as image").
+		From("offers a").WhereAnd("fk_user_id", "=", request.GetUser()).
 		Where("a.deleted_at", "nil", "is null")
 	orm.Order("a.updated_at", "desc")
 	if request.GetLimit() != "" {
@@ -37,11 +38,11 @@ func (u PromotionController) GetAllUsers(c context.Context, request *proto.Promo
 		orm.Offset(request.GetOffset())
 		offset = request.GetOffset()
 	}
-	redisKey := fmt.Sprintf("promotions:all:users:%s:%s:%d", offset, limit, request.GetUser())
+	redisKey := fmt.Sprintf("offers:all:users:%s:%s:%d", offset, limit, request.GetUser())
 	get := settings.Redis.Get(redisKey)
 	valRedis, errRedis := get.Result()
 	if errRedis == nil {
-		var r = &proto.PromotionServiceGetAllUsersRS{}
+		var r = &proto.OfferServiceGetAllUsersRS{}
 		_ = json.Unmarshal([]byte(valRedis), r)
 		return r, nil
 	}
@@ -51,22 +52,30 @@ func (u PromotionController) GetAllUsers(c context.Context, request *proto.Promo
 		println("Error: ", err.Error())
 		return nil, err
 	}
-	var image sql2.NullString
-	var result []*proto.PromotionUserServiceModel
+	var result []*proto.OfferUserServiceModel
 	{
 	}
+	var image sql2.NullString
 	for rows.Next() {
-		model := proto.PromotionUserServiceModel{}
+		model := proto.OfferUserServiceModel{}
 		tim := time.Time{}
+		start := pq.NullTime{}
+		end := pq.NullTime{}
 		e := rows.Scan(
 			&model.Id,
 			&model.Title,
 			&model.Description,
 			&tim,
+			&start,
+			&end,
+			&model.Offer,
 			&image,
 		)
 		model.Image = image.String
+		_ = start.Scan(&model.StartAt)
+		_ = end.Scan(&model.EndAt)
 		model.UpdatedAt = tim.Format("2006-01-02 15:04:05")
+
 		if e != nil {
 			println("Error 2", e.Error())
 			return nil, e
@@ -84,7 +93,7 @@ func (u PromotionController) GetAllUsers(c context.Context, request *proto.Promo
 	if e != nil {
 		return nil, e
 	}
-	res := &proto.PromotionServiceGetAllUsersRS{
+	res := &proto.OfferServiceGetAllUsersRS{
 		Result: result,
 		Count:  totalCount,
 	}
@@ -95,9 +104,9 @@ func (u PromotionController) GetAllUsers(c context.Context, request *proto.Promo
 	}
 	return res, nil
 }
-func (s *PromotionController) Create(_ context.Context, request *proto.PromotionServiceCreateRQ) (*proto.PromotionServiceRS, error) {
-	model := modelDB.PromotionModel{}
-	id, e := model.CreatePromotion(settings.Db, request)
+func (s *OfferController) Create(_ context.Context, request *proto.OfferServiceCreateRQ) (*proto.OfferServiceRS, error) {
+	model := modelDB.OfferModel{}
+	id, e := model.CreateOffer(settings.Db, request)
 	if e != nil {
 		println("Error: ", e.Error())
 		return nil, e
@@ -105,8 +114,8 @@ func (s *PromotionController) Create(_ context.Context, request *proto.Promotion
 	if len(request.GetFileNames()) > 0 {
 		for _, file := range request.GetFileNames() {
 			orm := new(libraries.ORMInsert)
-			orm.From("promotions_images")
-			orm.Add("fk_promotion_id", id)
+			orm.From("offers_images")
+			orm.Add("fk_offer_id", id)
 			orm.Add("image", file)
 			_, _, e := orm.Build().Save(settings.Db)
 			if e != nil {
@@ -117,10 +126,49 @@ func (s *PromotionController) Create(_ context.Context, request *proto.Promotion
 	}
 
 	if id > 0 {
-		art := models.RedisPromotion{}
+		art := models.RedisOffer{}
 		art.DeleteCache(settings.Redis)
 	}
-	return &proto.PromotionServiceRS{
+	return &proto.OfferServiceRS{
 		Success: id > 0,
 	}, nil
+}
+func (s *OfferController) Assign(_ context.Context, request *proto.OfferServiceAssignRQ) (*proto.OfferServiceRS, error) {
+	model := modelDB.OfferModel{}
+	assign := model.Assign(settings.Db, request.Articles, request.Offer)
+	if assign != nil {
+		return &proto.OfferServiceRS{
+			Success: false,
+		}, nil
+	}
+	return &proto.OfferServiceRS{
+		Success: true,
+	}, nil
+}
+func (s *OfferController) Assigned(_ context.Context, request *proto.OfferServiceAssignedRQ) (*proto.OfferServiceAssignedRS, error) {
+	orm := new(libraries.ORM)
+	build := orm.
+		Select("fk_offer_id, fk_article_id").
+		From("offers_articles").
+		Where("fk_offer_id", "=", request.GetOffer()).
+		Build()
+	sql, i := build.ToSql()
+	rows, e := settings.Db.Query(sql, i...)
+	if e != nil {
+		return nil, e
+	}
+	result := &proto.OfferServiceAssignedRS{}
+	for rows.Next() {
+		model := &proto.OfferServiceAssignedModelRS{}
+		e := rows.Scan(
+			&model.OfferId,
+			&model.ArticleId,
+		)
+		result.Result = append(result.Result, model)
+		if e != nil {
+			return nil, e
+		}
+	}
+
+	return result, nil
 }

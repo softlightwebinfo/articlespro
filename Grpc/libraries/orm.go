@@ -31,9 +31,13 @@ func (then *ORM) From(from string) *ORM {
 	return then
 }
 func (then *ORM) Where(attr string, symbol string, value interface{}) *ORM {
-	then.dataWhereIndex++
-	then.dataWhere = append(then.dataWhere, fmt.Sprintf("%s %s $%d", attr, symbol, then.dataWhereIndex))
-	then.dataWhereMap = append(then.dataWhereMap, value)
+	if symbol != "nil" {
+		then.dataWhereIndex++
+		then.dataWhere = append(then.dataWhere, fmt.Sprintf("%s %s $%d", attr, symbol, then.dataWhereIndex))
+		then.dataWhereMap = append(then.dataWhereMap, value)
+	} else {
+		then.dataWhere = append(then.dataWhere, fmt.Sprintf("%s %s", attr, value))
+	}
 	return then
 }
 func (then *ORM) WhereAnd(attr string, symbol string, value interface{}) *ORM {
@@ -244,6 +248,9 @@ func (then *ORMInsert) Build() *ORMAction {
 	then.buildInsert()
 	return new(ORMAction).Init(then.dataBuilder, then.dataValuesValue)
 }
+func (then *ORMInsert) ToSQL() (string, []interface{}) {
+	return then.dataBuilder, then.dataValuesValue
+}
 func (then *ORMInsert) buildInsert() {
 	then.dataBuilder = "INSERT INTO "
 	then.dataBuilder += then.dataFrom
@@ -273,7 +280,7 @@ type ORMAction struct {
 }
 
 func (then *ORMAction) Save(db *sql.DB) (id int64, affected int64, error error) {
-//	println(then.dataBuilder)
+	//	println(then.dataBuilder)
 	res, e := db.Exec(then.dataBuilder, then.dataValues...)
 	if e != nil {
 		error = e
@@ -301,6 +308,9 @@ type ORMUpdate struct {
 	dataBuilder      string
 }
 
+func (then *ORMUpdate) GetSQL() string {
+	return then.dataBuilder
+}
 func (then *ORMUpdate) From(from string) *ORMUpdate {
 	then.dataFrom = from
 	return then
@@ -381,6 +391,9 @@ func (then *ORMDelete) WhereOr(attr string, action string, value interface{}) {
 	then.dateIndexValue++
 	then.dataWhere = append(then.dataWhere, fmt.Sprintf("\"%s\" %s $%d or", attr, action, then.dateIndexValue))
 	then.dataWhereValues = append(then.dataWhereValues, value)
+}
+func (then *ORMDelete) ToSQL() (string, []interface{}) {
+	return then.dataBuilder, then.dataWhereValues
 }
 func (then *ORMDelete) Build() *ORMAction {
 	then.buildDelete()

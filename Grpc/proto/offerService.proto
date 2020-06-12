@@ -1,37 +1,65 @@
 syntax = "proto3";
 package proto;
 
-message PromotionServiceGetAllUsersRQ {
+message OfferServiceGetAllUsersRQ {
     string offset = 1;
     string limit = 2;
     int64 user = 3;
 }
 
-message PromotionServiceGetAllUsersRS {
-    repeated PromotionUserServiceModel result = 1;
+message OfferServiceGetAllUsersRS {
+    repeated OfferUserServiceModel result = 1;
     int64 count = 2;
 }
 
-message PromotionUserServiceModel {
+message OfferUserServiceModel {
     int64 id = 1;
     string title = 2;
     string description = 3;
     string updatedAt = 4;
-    string image = 5;
+    string startAt = 5;
+    string endAt = 6;
+    string offer = 7;
+    string image = 8;
 }
 
-message PromotionServiceCreateRQ {
+message OfferServiceCreateRQ {
     string title = 1;
     string description = 2;
     int64 user = 3;
-    repeated string fileNames = 4;
+    string price = 4;
+    string startAt = 5;
+    string endAt = 6;
+    repeated string fileNames = 7;
 }
 
-message PromotionServiceRS {
+message OfferServiceRS {
     bool success = 1;
 }
 
-service PromotionService {
-    rpc GetAllUsers (PromotionServiceGetAllUsersRQ) returns (PromotionServiceGetAllUsersRS);
-    rpc Create (PromotionServiceCreateRQ) returns (PromotionServiceRS);
+message OfferServiceAssignArticle {
+    int64 id = 1;
+    bool selected = 2;
+}
+
+message OfferServiceAssignRQ {
+    repeated OfferServiceAssignArticle articles = 1;
+    int64 offer = 2;
+}
+
+message OfferServiceAssignedRQ {
+    int64 offer = 1;
+}
+message OfferServiceAssignedModelRS {
+    int64 offerId = 1;
+    int64 articleId = 2;
+}
+message OfferServiceAssignedRS {
+    repeated OfferServiceAssignedModelRS result = 1;
+}
+service OfferService {
+    rpc GetAllUsers (OfferServiceGetAllUsersRQ) returns (OfferServiceGetAllUsersRS);
+    rpc Create (OfferServiceCreateRQ) returns (OfferServiceRS);
+    rpc Assign (OfferServiceAssignRQ) returns (OfferServiceRS);
+    rpc Assigned (OfferServiceAssignedRQ) returns (OfferServiceAssignedRS);
 }
