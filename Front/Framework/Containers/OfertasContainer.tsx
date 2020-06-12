@@ -9,7 +9,7 @@ import {useState} from "react";
 import {DialogSelectArticles} from "./DialogSelectArticles";
 
 
-export const OfertasContainer = ({articles, isAdmin}: { isAdmin: boolean, articles: IPListOffersAdmin, onDelete: (art: IPListOffersAdminResult) => void }) => {
+export const OfertasContainer = ({articles, isAdmin}: { isAdmin?: boolean, articles: IPListOffersAdmin, onDelete?: (art: IPListOffersAdminResult) => void }) => {
     const [open, setOpen] = useState(false);
     const [offerId, setOfferId] = useState("0");
     const getOffers = () => (

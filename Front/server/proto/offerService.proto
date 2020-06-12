@@ -7,7 +7,16 @@ message OfferServiceGetAllUsersRQ {
     int64 user = 3;
 }
 
+message OfferServiceGetAllRQ {
+    string offset = 1;
+    string limit = 2;
+}
+
 message OfferServiceGetAllUsersRS {
+    repeated OfferUserServiceModel result = 1;
+    int64 count = 2;
+}
+message OfferServiceGetAllRS {
     repeated OfferUserServiceModel result = 1;
     int64 count = 2;
 }
@@ -50,18 +59,17 @@ message OfferServiceAssignRQ {
 message OfferServiceAssignedRQ {
     int64 offer = 1;
 }
-
 message OfferServiceAssignedModelRS {
     int64 offerId = 1;
     int64 articleId = 2;
 }
-
 message OfferServiceAssignedRS {
     repeated OfferServiceAssignedModelRS result = 1;
 }
-
 service OfferService {
     rpc GetAllUsers (OfferServiceGetAllUsersRQ) returns (OfferServiceGetAllUsersRS);
+    rpc GetAll (OfferServiceGetAllRQ) returns (OfferServiceGetAllRS);
+    rpc LastOffers (OfferServiceGetAllRQ) returns (OfferServiceGetAllRS);
     rpc Create (OfferServiceCreateRQ) returns (OfferServiceRS);
     rpc Assign (OfferServiceAssignRQ) returns (OfferServiceRS);
     rpc Assigned (OfferServiceAssignedRQ) returns (OfferServiceAssignedRS);

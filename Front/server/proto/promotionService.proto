@@ -6,8 +6,17 @@ message PromotionServiceGetAllUsersRQ {
     string limit = 2;
     int64 user = 3;
 }
+message PromotionServiceGetAllRQ {
+    string offset = 1;
+    string limit = 2;
+}
 
 message PromotionServiceGetAllUsersRS {
+    repeated PromotionUserServiceModel result = 1;
+    int64 count = 2;
+}
+
+message PromotionServiceGetAllRS {
     repeated PromotionUserServiceModel result = 1;
     int64 count = 2;
 }
@@ -32,6 +41,8 @@ message PromotionServiceRS {
 }
 
 service PromotionService {
+    rpc GetAll (PromotionServiceGetAllRQ) returns (PromotionServiceGetAllRS);
+    rpc LastPromotions (PromotionServiceGetAllRQ) returns (PromotionServiceGetAllRS);
     rpc GetAllUsers (PromotionServiceGetAllUsersRQ) returns (PromotionServiceGetAllUsersRS);
     rpc Create (PromotionServiceCreateRQ) returns (PromotionServiceRS);
 }

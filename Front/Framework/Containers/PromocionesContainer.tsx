@@ -3,9 +3,10 @@ import {Grid} from "@material-ui/core";
 import {Promocion} from "../Components/Promocion";
 import {IPListPromotionsAdmin, IPListPromotionsAdminResult} from "../Props/IPListPromotionsAdmin";
 import {MessageError} from "../Components/MessageError";
+// @ts-ignore
 import {Router} from '../../server/routes';
 
-export const PromocionesContainer = ({articles, onDelete}: { articles: IPListPromotionsAdmin, onDelete: (art: IPListPromotionsAdminResult) => void }) => {
+export const PromocionesContainer = ({articles, onDelete}: { articles: IPListPromotionsAdmin, onDelete?: (art: IPListPromotionsAdminResult) => void }) => {
     const getPromotions = () => (
         articles.result.map((item, i) => {
             return (

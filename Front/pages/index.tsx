@@ -6,26 +6,27 @@ import {Ads} from "../Framework/Components/Ads";
 import {TitleSubtitle} from "../Framework/Components/TitleSubtitle";
 import {Separator} from "../Framework/Components/Separator";
 import {CategoriesContainer} from "../Framework/Containers/CategoriesContainer";
-import {ArticulosContainer} from "../Framework/Containers/ArticulosContainer";
 import {PromocionesContainer} from "../Framework/Containers/PromocionesContainer";
 import {OfertasContainer} from "../Framework/Containers/OfertasContainer";
 import {CategoriasListContainer} from "../Framework/Containers/CategoriasListContainer";
 import {ProjectosListContainer} from "../Framework/Containers/ProjectosListContainer";
 import {wrapper} from "../Framework/store/store";
-import {loadData, startClock, tickClock} from "../Framework/store/example/actions";
+import {startClock} from "../Framework/store/example/actions";
 import {useEffect} from "react";
 import {useDispatch, useSelector} from 'react-redux'
 import {END} from 'redux-saga'
+import {ActionLastArticles, ActionLastOffers, ActionLastPromotions} from "../Framework/store/articles";
+import {ArticulosContainer} from "../Framework/Containers/ArticulosContainer";
 
 function Home() {
-    const dispatch = useDispatch()
-
+    const dispatch = useDispatch();
+    const lastPromotions = useSelector(state => state.articles.lastPromotions);
+    const lastOffers = useSelector(state => state.articles.lastOffers);
+    const lastArticles = useSelector(state => state.articles.lastArticles);
     useEffect(() => {
         dispatch(startClock())
     }, [dispatch])
 
-    //const error = useSelector((state) => state.error);
-    //const light = useSelector((state) => state.light);
     return (
         <Wrapper>
             <MyGallery/>
@@ -68,13 +69,13 @@ function Home() {
             </Container>
             <Container>
                 <TitleSubtitle
-                    title={"Listado de Articulos destacados"}
+                    title={"Listado de ultimos articulos"}
                     description={"Alfombras, ordenadores, monitores, chimeneas, martillos"}
                 />
             </Container>
             <Container>
                 <ArticulosContainer
-
+                    articles={lastArticles}
                 />
             </Container>
             <Separator/>
@@ -86,7 +87,7 @@ function Home() {
             </Container>
             <Container>
                 <PromocionesContainer
-
+                    articles={lastPromotions}
                 />
             </Container>
             <Separator/>
@@ -98,7 +99,7 @@ function Home() {
             </Container>
             <Container>
                 <OfertasContainer
-
+                    articles={lastOffers}
                 />
             </Container>
             <Separator/>
@@ -139,13 +140,17 @@ function Home() {
 }
 
 export const getStaticProps = wrapper.getStaticProps(async ({store}) => {
-    return;
-    store.dispatch(tickClock(false))
-
-    if (!store.getState().placeholderData) {
-        store.dispatch(loadData());
-        store.dispatch(END)
+    if (!store.getState().articles.lastPromotions) {
+        store.dispatch(ActionLastPromotions());
     }
+    if (!store.getState().articles.lastOffers) {
+        store.dispatch(ActionLastOffers());
+    }
+    if (!store.getState().articles.lastArticles) {
+        store.dispatch(ActionLastArticles());
+    }
+
+    store.dispatch(END);
     await store.sagaTask.toPromise()
 });
 export default Home;

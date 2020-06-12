@@ -154,6 +154,20 @@ app.prepare().then(() => {
             return res.json(resp);
         });
     });
+    server.get('/api/promotions/last', (req, res) => {
+        myClientPromotions.runService('LastPromotions', {
+            // @ts-ignore
+            user: req.cookies.user,
+            offset: "0",
+            limit: "12",
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
     server.get('/api/offers/all', (req, res) => {
         // @ts-ignore
         if (!req.cookies.user) {
@@ -172,7 +186,30 @@ app.prepare().then(() => {
             return res.json(resp);
         });
     });
-
+    server.get('/api/offers/last', (_, res) => {
+        myClientOffers.runService('LastOffers', {
+            offset: "0",
+            limit: "12",
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+    server.get('/api/articles/last', (_, res) => {
+        myClientArticles.runService('LastArticles', {
+            offset: "0",
+            limit: "12",
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
     server.post('/api/articles/create', upload, async (req, res) => {
         // @ts-ignore
         const imageName = req.filename;

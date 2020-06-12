@@ -76,6 +76,10 @@ message ArticleServiceGetAllUsersRq {
     string offset = 1;
     string limit = 2;
     int64 user = 3;
+}
+message ArticleServiceGetAllLastRq {
+    string offset = 1;
+    string limit = 2;
 } // Get all articles
 message ArticleServiceGetPopularRq {
     string offset = 1;
@@ -86,6 +90,11 @@ message ArticleServiceGetAllRs {
     int64 count = 2;
 }
 message ArticleServiceGetAllUserRs {
+    repeated ArticleUserServiceModel result = 1;
+    int64 count = 2;
+}
+
+message ArticleServiceGetAllLastRs {
     repeated ArticleUserServiceModel result = 1;
     int64 count = 2;
 }
@@ -173,6 +182,7 @@ message ArticleServiceViewRq {
 
 service ArticleService {
     rpc GetAllUsers (ArticleServiceGetAllUsersRq) returns (ArticleServiceGetAllUserRs);
+    rpc LastArticles (ArticleServiceGetAllLastRq) returns (ArticleServiceGetAllLastRs);
     rpc GetAll (ArticleServiceGetAllRq) returns (ArticleServiceGetAllRs);
     rpc GetPopular (ArticleServiceGetPopularRq) returns (ArticleServiceGetPopularRs);
     rpc Get (ArticleServiceGetRq) returns (ArticleServiceGetRs);

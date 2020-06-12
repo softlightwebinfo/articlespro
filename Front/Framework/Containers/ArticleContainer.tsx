@@ -6,7 +6,7 @@ import {useState} from "react";
 import {Services} from "../libs/Services";
 import {DialogInfoArticle} from "./DialogInfoArticle";
 
-export const ArticleContainer = ({article, onDelete}: IPArticleContainer) => {
+export const ArticleContainer = ({article, onDelete, isAdmin = true}: IPArticleContainer) => {
     const [open, setOpen] = useState(false);
     const [openInfo, setOpenInfo] = useState(false);
     return (
@@ -14,7 +14,7 @@ export const ArticleContainer = ({article, onDelete}: IPArticleContainer) => {
             <Article
                 handleInfoClick={() => setOpenInfo(true)}
                 article={article}
-                isAdmin
+                isAdmin={isAdmin}
                 admin={{
                     onEdit: () => console.log("On edit"),
                     onDelete: () => {
