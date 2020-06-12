@@ -6,4 +6,5 @@ export interface IPArticle {
     isAdmin?: boolean;
     admin?: IPAdminEvent;
     AdminIsAssigned?: boolean;
+    handleInfoClick: () => void;
 }

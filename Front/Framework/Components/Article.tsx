@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import {red} from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import InfoIcon from '@material-ui/icons/Info';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -52,13 +52,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const Article = ({article, isAdmin, admin, AdminIsAssigned}: IPArticle) => {
+export const Article = ({article, isAdmin, admin, AdminIsAssigned, handleInfoClick}: IPArticle) => {
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
     const getActions = () => {
         if (AdminIsAssigned) {
             return (
@@ -125,21 +120,19 @@ export const Article = ({article, isAdmin, admin, AdminIsAssigned}: IPArticle) =
             />
             <CardContent className={classes.content}>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    {expanded ? article.description : article.description.substr(0, 100) + '...'}
+                    {article.description.substr(0, 100) + '...'}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
                 {isAdmin ? getActionsAdmin() : getActions()}
-
                 <IconButton
                     className={clsx(classes.expand, {
-                        [classes.expandOpen]: expanded,
+
                     })}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
+                    onClick={handleInfoClick}
                     aria-label="show more"
                 >
-                    <ExpandMoreIcon/>
+                    <InfoIcon/>
                 </IconButton>
             </CardActions>
         </Card>

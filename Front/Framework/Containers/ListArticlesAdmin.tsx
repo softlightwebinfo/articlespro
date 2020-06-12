@@ -13,7 +13,7 @@ export const ListArticlesAdmin = ({articles, onDelete}: { articles: IPListArticl
                     key={item.id}
                 >
                     <ArticleContainer
-                        onDelete={e => onDelete(item)}
+                        onDelete={() => onDelete(item)}
                         article={item}
                         index={index}
                     />

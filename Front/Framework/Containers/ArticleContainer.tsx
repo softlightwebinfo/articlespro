@@ -4,12 +4,15 @@ import {IPArticleContainer} from "../Props/IPArticleContainer";
 import {ConfirmationDialogRaw} from "../Components/DialogConfirm";
 import {useState} from "react";
 import {Services} from "../libs/Services";
+import {DialogInfoArticle} from "./DialogInfoArticle";
 
 export const ArticleContainer = ({article, onDelete}: IPArticleContainer) => {
     const [open, setOpen] = useState(false);
+    const [openInfo, setOpenInfo] = useState(false);
     return (
         <>
             <Article
+                handleInfoClick={() => setOpenInfo(true)}
                 article={article}
                 isAdmin
                 admin={{
@@ -21,6 +24,13 @@ export const ArticleContainer = ({article, onDelete}: IPArticleContainer) => {
                         console.log("On Visualize")
                     }
                 }}
+            />
+            <DialogInfoArticle
+                handleClose={() => {
+                    setOpenInfo(false);
+                }}
+                article={article}
+                open={openInfo}
             />
             <ConfirmationDialogRaw
                 id={article.id}
