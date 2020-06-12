@@ -5,4 +5,5 @@ export interface IPArticle {
     article: IPListArticlesAdminResult;
     isAdmin?: boolean;
     admin?: IPAdminEvent;
+    AdminIsAssigned?: boolean;
 }

@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     },
 });
 
-export const Oferta: ({offer}: IPOferta) => any = ({offer}) => {
+export const Oferta: ({offer, isAdmin, admin}: IPOferta) => any = ({offer, isAdmin, admin}) => {
     const classes = useStyles();
 
     return (
@@ -29,12 +29,22 @@ export const Oferta: ({offer}: IPOferta) => any = ({offer}) => {
                 />
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="primary">
-                    Share
-                </Button>
-                <Button size="small" color="primary">
-                    Leer más
-                </Button>
+                {isAdmin ? (
+                    <>
+                        <Button onClick={admin.onClickAssign} size="small" color="primary">
+                            Asignar
+                        </Button>
+                        <Button size="small" color="primary">
+                            Leer más
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <Button size="small" color="primary">
+                            Leer más
+                        </Button>
+                    </>
+                )}
             </CardActions>
         </Card>
     );

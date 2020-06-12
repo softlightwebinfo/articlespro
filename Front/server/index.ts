@@ -2,6 +2,7 @@ import next from 'next'
 import express from 'express';
 import * as path from "path";
 import * as fs from "fs";
+import {IOfferAssigned} from "../Framework/Interfaces/IOfferAssigned";
 
 const multer = require('multer');
 const sharp = require('sharp')
@@ -232,6 +233,74 @@ app.prepare().then(() => {
             // @ts-ignore
             if (e) {
                 return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+    server.post('/api/offers/create', upload, async (req, res) => {
+        // @ts-ignore
+        const imageName = req.filename;
+        let body = req.body;
+        // @ts-ignore
+        const {filename: image} = req.file;
+        // @ts-ignore
+        await sharp(req.file.path)
+            .resize(500)
+            .png({quality: 50})
+            .toFile(
+                // @ts-ignore
+                path.resolve(req.file.destination, 'offers', image)
+            );
+        // @ts-ignore
+        fs.unlinkSync(req.file.path);
+        myClientOffers.runService('Create', {
+            title: body.title,
+            description: body.description,
+            price: body.price,
+            startAt: body.startAt,
+            endAt: body.endAt,
+            user: Number(req.cookies.user),
+            // @ts-ignore
+            fileNames: [imageName]
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+    server.post('/api/offers/assign', upload, async (req, res) => {
+        let body = req.body;
+        myClientOffers.runService('Assign', {
+            articles: body.articles,
+            offer: body.offer,
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
+    server.get('/api/offers/assigned/:id', upload, async (req, res) => {
+        myClientOffers.runService('Assigned', {
+            offer: req.params.id,
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            if (resp.result) {
+                let result: {
+                    [p: number]: IOfferAssigned,
+                } = {};
+                let len: number = resp.result.length;
+                let respuesta: IOfferAssigned[] = resp.result as IOfferAssigned[];
+                for (let i = 0; i < len; i++) {
+                    result[respuesta[i].articleId] = respuesta[i];
+                }
+                return res.json(result);
             }
             return res.json(resp);
         });

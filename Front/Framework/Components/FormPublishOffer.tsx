@@ -8,7 +8,7 @@ import {FormTextarea} from "../libs/Form/Components/FormTextarea";
 import {Grid} from "@material-ui/core";
 import {FormValues} from "../libs/Form/libs/FormValues";
 import {Services} from "../libs/Services";
-import {IPromotionPublish} from "../Interfaces/IPromotionPublish";
+import {IOfferPublish} from "../Interfaces/IOfferPublish";
 import {Alert} from "@material-ui/lab";
 import {CardFile} from "./CardFile";
 import {Separator} from "./Separator";
@@ -21,7 +21,7 @@ export class FormPublishOffer extends Component<{}, { form: FormValues, files: [
         form: new FormValues({
             description: "La descripción no puede estar vacia",
             title: "El titulo no puede estar vacio",
-            price: "El precio no puede estar vacio",
+            price: "La oferta no puede estar vacia",
             startAt: "La fecha no puede estar vacia",
             endAt: "La fecha no puede estar vacia",
         }),
@@ -98,8 +98,13 @@ export class FormPublishOffer extends Component<{}, { form: FormValues, files: [
                     return;
                 }
                 try {
-                    await Services.PublishPromotion(this.state.form.ToDataJson() as IPromotionPublish, this.state.files);
-                    Router.pushRoute("dashboardPromotions")
+                    const xhr = await Services.PublishOffer(this.state.form.ToDataJson() as IOfferPublish, this.state.files);
+                    const json = await xhr.json();
+                    if (json.success) {
+                        Router.pushRoute("dashboardOffers")
+                    }else{
+                        alert("Error")
+                    }
                 } catch (e) {
                     console.log("Error", e);
                 }
@@ -112,7 +117,7 @@ export class FormPublishOffer extends Component<{}, { form: FormValues, files: [
             }
         });
         form.add(new FormInput("title", "Titulo").SetAutoFocus(true));
-        form.add(new FormInput("price", "Precio", "number"));
+        form.add(new FormInput("price", "Oferta", "number"));
         form.add(new FormTextarea("description", "Descripción"));
         form.add(new FormDatePicker("startAt", "Cuando empieza la oferta?"));
         form.add(new FormDatePicker("endAt", "Cuando termina la oferta?"));

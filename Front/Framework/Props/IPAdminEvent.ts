@@ -1,7 +1,7 @@
 export interface IPAdminEvent {
-    onDelete();
-
-    onEdit();
-
-    onVisualize();
+    onDelete?: () => void
+    onEdit?: () => void
+    onVisualize?: () => void;
+    handleCheckedAssigned?: () => void;
+    checkedAssigned?: boolean;
 }

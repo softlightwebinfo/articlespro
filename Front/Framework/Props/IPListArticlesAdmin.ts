@@ -4,6 +4,7 @@ export interface IPListArticlesAdmin {
 }
 
 export interface IPListArticlesAdminResult {
+    selected?: boolean;
     id: string;
     description: string;
     offer: string;

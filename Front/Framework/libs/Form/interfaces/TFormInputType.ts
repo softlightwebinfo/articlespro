@@ -1,1 +1,1 @@
-export type TFormInputType = "text" | "tel" | "email" | "password" | "file";
+export type TFormInputType = "text" | "tel" | "email" | "password" | "file" | "number";

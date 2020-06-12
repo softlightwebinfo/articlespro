@@ -19,6 +19,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import ViewDetailIcon from '@material-ui/icons/Visibility';
 import {IPArticle} from "../Props/IPArticle";
 import moment from "moment";
+import {Checkbox, FormControlLabel} from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -51,23 +52,43 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const Article = ({article, isAdmin, admin}: IPArticle) => {
+export const Article = ({article, isAdmin, admin, AdminIsAssigned}: IPArticle) => {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-    const getActions = () => (
-        <>
-            <IconButton aria-label="add to favorites">
-                <FavoriteIcon/>
-            </IconButton>
-            <IconButton aria-label="share">
-                <ShareIcon/>
-            </IconButton>
-        </>
-    );
+    const getActions = () => {
+        if (AdminIsAssigned) {
+            return (
+                <>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={admin.checkedAssigned || false}
+                                onChange={admin.handleCheckedAssigned}
+                                name="checkedB"
+                                color="primary"
+                            />
+                        }
+                        label={admin.checkedAssigned ? "Seleccionado" : "No seleccionado"}
+                    />
+
+                </>
+            );
+        }
+        return (
+            <>
+                <IconButton aria-label="add to favorites">
+                    <FavoriteIcon/>
+                </IconButton>
+                <IconButton aria-label="share">
+                    <ShareIcon/>
+                </IconButton>
+            </>
+        );
+    }
     const getActionsAdmin = () => (
         <>
             <IconButton onClick={admin.onDelete} aria-label="Eliminar" title={"ELiminar"}>

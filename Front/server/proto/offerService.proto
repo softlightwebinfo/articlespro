@@ -20,20 +20,49 @@ message OfferUserServiceModel {
     string startAt = 5;
     string endAt = 6;
     string offer = 7;
+    string image = 8;
 }
 
 message OfferServiceCreateRQ {
     string title = 1;
     string description = 2;
     int64 user = 3;
-    repeated string fileNames = 4;
+    string price = 4;
+    string startAt = 5;
+    string endAt = 6;
+    repeated string fileNames = 7;
 }
 
 message OfferServiceRS {
     bool success = 1;
 }
 
+message OfferServiceAssignArticle {
+    int64 id = 1;
+    bool selected = 2;
+}
+
+message OfferServiceAssignRQ {
+    repeated OfferServiceAssignArticle articles = 1;
+    int64 offer = 2;
+}
+
+message OfferServiceAssignedRQ {
+    int64 offer = 1;
+}
+
+message OfferServiceAssignedModelRS {
+    int64 offerId = 1;
+    int64 articleId = 2;
+}
+
+message OfferServiceAssignedRS {
+    repeated OfferServiceAssignedModelRS result = 1;
+}
+
 service OfferService {
     rpc GetAllUsers (OfferServiceGetAllUsersRQ) returns (OfferServiceGetAllUsersRS);
     rpc Create (OfferServiceCreateRQ) returns (OfferServiceRS);
+    rpc Assign (OfferServiceAssignRQ) returns (OfferServiceRS);
+    rpc Assigned (OfferServiceAssignedRQ) returns (OfferServiceAssignedRS);
 }

@@ -6,7 +6,7 @@ export class FormDatePicker extends FormComponent {
     private readonly _name: string;
     private readonly _title: string;
     private _onChange: (e: any, component: this) => void;
-    private _defaultValue: string = "2017-05-24T10:30";
+    private _defaultValue: string = "";
     private _type: TFormDatePickerType = "datetime-local";
 
     constructor(name: string, title: string, type?: TFormDatePickerType = "datetime-local") {

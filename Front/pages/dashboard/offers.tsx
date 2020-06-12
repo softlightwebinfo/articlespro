@@ -46,6 +46,7 @@ export default class Dashboard extends Component<{ articles: IPListOffersAdmin }
                     />
                 )}
                 <OfertasContainer
+                    isAdmin
                     onDelete={(article) => {
                         this.setState((e) => ({
                             articles: {
