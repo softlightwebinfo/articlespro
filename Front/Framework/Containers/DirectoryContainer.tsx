@@ -1,18 +1,20 @@
 import {Component} from "react";
 import * as React from "react";
 import {Directory} from "../Components/Directory";
+import {IPDirectoryContainer} from "../Props/IPDirectoryContainer";
 
-export class DirectoryContainer extends Component {
+export class DirectoryContainer extends Component<IPDirectoryContainer> {
     constructor(props) {
         super(props);
     }
 
     render() {
         return (
-            [...new Array(30)].map((item, i) => {
+           this.props.directory.result.map((item) => {
                 return (
                     <Directory
-                        key={i}
+                        key={item.id}
+                        item={item}
                     />
                 );
             })

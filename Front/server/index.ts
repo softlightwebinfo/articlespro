@@ -98,6 +98,18 @@ app.prepare().then(() => {
             return res.json(resp);
         });
     });
+    server.get('/api/users/directory', (_, res) => {
+        myClient.runService('GetDirectory', {
+            limit: "100",
+            offset: "0",
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.json(resp);
+        });
+    });
 
     server.delete('/api/articles/delete', (req, res) => {
         // @ts-ignore

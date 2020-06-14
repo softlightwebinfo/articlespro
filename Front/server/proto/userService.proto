@@ -23,6 +23,19 @@ message UserServiceModel {
     bool active = 6;
     string name = 7;
 }
+message UserServiceDirectoryModel {
+    int64 id = 1;
+    string email = 2;
+    string password = 3;
+    string createdAt = 4;
+    string updatedAt = 5;
+    bool active = 6;
+    string name = 7;
+    string role = 8;
+    string roleParent = 9;
+    string slug = 10;
+    string description = 11;
+}
 message UserServiceUpdateRq {
     string email = 1;
     string password = 2;
@@ -53,8 +66,16 @@ message UserServiceGetAllRq {
     string offset = 1;
     string limit = 2;
 }
+message UserServiceGetDirectoryRq {
+    string offset = 1;
+    string limit = 2;
+}
 message UserServiceGetAllRs {
     repeated UserServiceModel result = 1;
+    int64 count = 2;
+}
+message UserServiceGetDirectoryRs {
+    repeated UserServiceDirectoryModel result = 1;
     int64 count = 2;
 }
 message UserServiceDeleteRq {
@@ -66,6 +87,7 @@ service UserService {
     rpc Get (UserServiceGetRq) returns (UserServiceGetRs);
     rpc Login (UserServiceLoginRq) returns (UserServiceLoginRs);
     rpc GetAll (UserServiceGetAllRq) returns (UserServiceGetAllRs);
+    rpc GetDirectory (UserServiceGetDirectoryRq) returns (UserServiceGetDirectoryRs);
     rpc Delete (UserServiceDeleteRq) returns (UserServiceBool);
     rpc Start (UserServiceGetRq) returns (UserServiceLoginRs);
 }

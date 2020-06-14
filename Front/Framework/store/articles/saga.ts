@@ -1,4 +1,4 @@
-import {FailureLastArticles, FailureLastOffers, FailureLastPromotions, SuccessLastArticles, SuccessLastOffers, SuccessLastPromotions} from "./actions";
+import {FailureDirectory, FailureLastArticles, FailureLastOffers, FailureLastPromotions, SuccessDirectory, SuccessLastArticles, SuccessLastOffers, SuccessLastPromotions} from "./actions";
 import {put} from 'redux-saga/effects'
 import {getApi} from "../../../settings";
 
@@ -62,5 +62,25 @@ export function* getLastArticlesSaga() {
     } catch (err) {
         console.log("Errr", err);
         yield put(FailureLastArticles(err));
+    }
+}
+export function* getDirectorySaga() {
+    try {
+        const res = yield fetch(getApi("users/directory"), {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "GET"
+        });
+        const response = yield res.json();
+        if (!res.ok) {
+            yield put(FailureDirectory(response.error));
+            return;
+        }
+        yield put(SuccessDirectory(response));
+    } catch (err) {
+        console.log("Errr", err);
+        yield put(FailureDirectory(err));
     }
 }
