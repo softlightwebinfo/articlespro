@@ -7,4 +7,6 @@ export interface IPArticle {
     admin?: IPAdminEvent;
     AdminIsAssigned?: boolean;
     handleInfoClick: () => void;
+    handleFavorite: () => void;
+    isFavorite?: boolean;
 }

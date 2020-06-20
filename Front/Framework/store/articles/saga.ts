@@ -1,6 +1,7 @@
-import {FailureDirectory, FailureLastArticles, FailureLastOffers, FailureLastPromotions, SuccessDirectory, SuccessLastArticles, SuccessLastOffers, SuccessLastPromotions} from "./actions";
+import {FailureDirectory, FailureGetFavorites, FailureLastArticles, FailureLastOffers, FailureLastPromotions, FailureSetFavorite, SuccessDirectory, SuccessGetFavorites, SuccessLastArticles, SuccessLastOffers, SuccessLastPromotions, SuccessSetFavorite} from "./actions";
 import {put} from 'redux-saga/effects'
 import {getApi} from "../../../settings";
+import {FailureLogin, SetLogin} from "../user";
 
 export function* getLastPromotionsSaga() {
     try {
@@ -64,6 +65,7 @@ export function* getLastArticlesSaga() {
         yield put(FailureLastArticles(err));
     }
 }
+
 export function* getDirectorySaga() {
     try {
         const res = yield fetch(getApi("users/directory"), {
@@ -82,5 +84,42 @@ export function* getDirectorySaga() {
     } catch (err) {
         console.log("Errr", err);
         yield put(FailureDirectory(err));
+    }
+}
+
+export function* getFavoritesSaga(data) {
+    try {
+        const res = yield fetch(getApi("articles/favorites"), {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'cookie': data.ctx.req.headers.cookie,
+            },
+            method: "GET",
+        });
+        const response = yield res.json();
+        yield put(SuccessGetFavorites(response));
+    } catch (err) {
+        yield put(FailureGetFavorites(err));
+    }
+}
+
+export function* setFavoriteSaga(data) {
+    try {
+        const res = yield fetch(getApi("articles/favorite/" + data.data), {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            method: "POST",
+        });
+        const response = yield res.json();
+        if (response.success) {
+            yield put(SuccessSetFavorite(response, data.data));
+        } else {
+            yield put(FailureSetFavorite(response));
+        }
+    } catch (err) {
+        yield put(FailureSetFavorite(err));
     }
 }

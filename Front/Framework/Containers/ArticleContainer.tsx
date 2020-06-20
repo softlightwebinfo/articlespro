@@ -5,16 +5,26 @@ import {ConfirmationDialogRaw} from "../Components/DialogConfirm";
 import {useState} from "react";
 import {Services} from "../libs/Services";
 import {DialogInfoArticle} from "./DialogInfoArticle";
+import {Favoritesmodel} from "../Models/FavoriteModel";
+import {useSelector, useDispatch} from "react-redux";
+import {ActionSetFavorite} from "../store/articles";
 
 export const ArticleContainer = ({article, onDelete, isAdmin = true}: IPArticleContainer) => {
     const [open, setOpen] = useState(false);
     const [openInfo, setOpenInfo] = useState(false);
+    const favorite: Favoritesmodel = useSelector(state => Favoritesmodel.init(state.articles.favorites));
+    const isFavorite = favorite.hasKey(Number(article.id));
+    const dispatch = useDispatch();
     return (
         <>
             <Article
+                isFavorite={isFavorite}
                 handleInfoClick={() => setOpenInfo(true)}
                 article={article}
                 isAdmin={isAdmin}
+                handleFavorite={() => {
+                    dispatch(ActionSetFavorite(article.id));
+                }}
                 admin={{
                     onEdit: () => console.log("On edit"),
                     onDelete: () => {

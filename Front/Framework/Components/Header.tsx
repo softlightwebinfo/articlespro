@@ -20,7 +20,9 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import {DrawerMenu} from "./DrawerMenu";
 import {useSelector} from 'react-redux'
 import Look from '@material-ui/icons/Lock';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import {Link, Router} from '../../server/routes';
+import {Favoritesmodel} from "../Models/FavoriteModel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -93,6 +95,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Header = (props) => {
     const {isLogin} = useSelector((state) => state.user);
+    const favorites: Favoritesmodel = useSelector((state) => Favoritesmodel.init(state.articles.favorites));
 
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -100,7 +103,6 @@ export const Header = (props) => {
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
     const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -163,6 +165,14 @@ export const Header = (props) => {
                 </IconButton>
                 <p>Notifications</p>
             </MenuItem>
+            <MenuItem>
+                <IconButton color="inherit">
+                    <Badge badgeContent={favorites.getCount()} color="secondary">
+                        <FavoriteIcon/>
+                    </Badge>
+                </IconButton>
+                <p>Favoritos</p>
+            </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton
                     aria-label="account of current user"
@@ -223,6 +233,11 @@ export const Header = (props) => {
                             <IconButton aria-label="show 17 new notifications" color="inherit">
                                 <Badge badgeContent={17} color="secondary">
                                     <NotificationsIcon/>
+                                </Badge>
+                            </IconButton>
+                            <IconButton aria-label="show 17 new notifications" color="inherit">
+                                <Badge badgeContent={favorites.getCount()} color="secondary">
+                                    <FavoriteIcon/>
                                 </Badge>
                             </IconButton>
                             <IconButton

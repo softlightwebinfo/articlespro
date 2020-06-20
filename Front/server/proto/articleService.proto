@@ -179,10 +179,25 @@ message ArticleServiceViewRq {
     int64 id = 1;
     string book = 2;
 }
-
+message ArticleServiceFavoriteRq {
+    int64 id = 1;
+}
+message ArticleServiceFavorite {
+    int64 id = 1;
+}
+message ArticleServiceFavoriteRs {
+    repeated ArticleServiceFavorite result = 1;
+    int64 count = 2;
+}
+message ArticleServiceCreateFavoriteRq {
+    int64 user = 1;
+    int64 article = 2;
+}
 service ArticleService {
     rpc GetAllUsers (ArticleServiceGetAllUsersRq) returns (ArticleServiceGetAllUserRs);
     rpc LastArticles (ArticleServiceGetAllLastRq) returns (ArticleServiceGetAllLastRs);
+    rpc Favorites (ArticleServiceFavoriteRq) returns (ArticleServiceFavoriteRs);
+    rpc CreateFavorite (ArticleServiceCreateFavoriteRq) returns (ArticleServiceRsBool);
     rpc GetAll (ArticleServiceGetAllRq) returns (ArticleServiceGetAllRs);
     rpc GetPopular (ArticleServiceGetPopularRq) returns (ArticleServiceGetPopularRs);
     rpc Get (ArticleServiceGetRq) returns (ArticleServiceGetRs);

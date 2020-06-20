@@ -4,7 +4,7 @@ import es6promise from 'es6-promise'
 import {actionTypes as actionTypeExample} from './example/actions'
 import {loadDataSaga} from "./example/saga";
 import {authRegisterUserSaga, actionTypes as actionTypeUser, authLoginUserSaga, authInitialUserSaga, authLogoutUserSaga} from "./user";
-import {getLastPromotionsSaga, actionTypes as actionTypeArticles, getLastOffersSaga, getLastArticlesSaga, getDirectorySaga} from "./articles";
+import {getLastPromotionsSaga, actionTypes as actionTypeArticles, getLastOffersSaga, getLastArticlesSaga, getDirectorySaga, getFavoritesSaga, setFavoriteSaga} from "./articles";
 
 es6promise.polyfill();
 
@@ -20,6 +20,8 @@ function* rootSaga() {
         takeLatest(actionTypeArticles.LAST_OFFERS, getLastOffersSaga),
         takeLatest(actionTypeArticles.LAST_ARTICLES, getLastArticlesSaga),
         takeLatest(actionTypeArticles.DIRECTORY, getDirectorySaga),
+        takeLatest(actionTypeArticles.FAVORITES, getFavoritesSaga),
+        takeLatest(actionTypeArticles.SET_FAVORITE, setFavoriteSaga),
     ])
 }
 

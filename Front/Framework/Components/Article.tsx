@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import {red} from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import ShareIcon from '@material-ui/icons/Share';
 import InfoIcon from '@material-ui/icons/Info';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const Article = ({article, isAdmin, admin, AdminIsAssigned, handleInfoClick}: IPArticle) => {
+export const Article = ({article, isAdmin, admin, AdminIsAssigned, handleInfoClick, handleFavorite, isFavorite}: IPArticle) => {
     const classes = useStyles();
     const getActions = () => {
         if (AdminIsAssigned) {
@@ -75,15 +76,15 @@ export const Article = ({article, isAdmin, admin, AdminIsAssigned, handleInfoCli
         }
         return (
             <>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon/>
+                <IconButton onClick={handleFavorite} aria-label="add to favorites">
+                    {isFavorite ? <FavoriteIcon/> : <FavoriteBorder/>}
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon/>
                 </IconButton>
             </>
         );
-    }
+    };
     const getActionsAdmin = () => (
         <>
             <IconButton onClick={admin.onDelete} aria-label="Eliminar" title={"ELiminar"}>
@@ -126,9 +127,7 @@ export const Article = ({article, isAdmin, admin, AdminIsAssigned, handleInfoCli
             <CardActions disableSpacing>
                 {isAdmin ? getActionsAdmin() : getActions()}
                 <IconButton
-                    className={clsx(classes.expand, {
-
-                    })}
+                    className={clsx(classes.expand, {})}
                     onClick={handleInfoClick}
                     aria-label="show more"
                 >

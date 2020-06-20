@@ -222,6 +222,33 @@ app.prepare().then(() => {
             return res.json(resp);
         });
     });
+    server.get('/api/articles/favorites', (req, res) => {
+        myClientArticles.runService('Favorites', {
+            id: Number(req.cookies.user),
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            resp.result = resp.result.reduce((total, pre) => {
+                total[pre.id] = pre;
+                return total;
+            }, {});
+            return res.status(200).json(resp);
+        });
+    });
+    server.post('/api/articles/favorite/:id', (req, res) => {
+        myClientArticles.runService('CreateFavorite', {
+            user: Number(req.cookies.user),
+            article: Number(req.params.id),
+        }, (e, resp) => {
+            // @ts-ignore
+            if (e) {
+                return res.status(500).json({error: e.toString()})
+            }
+            return res.status(200).json(resp);
+        });
+    });
     server.post('/api/articles/create', upload, async (req, res) => {
         // @ts-ignore
         const imageName = req.filename;
